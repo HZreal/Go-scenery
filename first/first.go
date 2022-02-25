@@ -1,6 +1,11 @@
-package main
+// 声明当前所在包
+package first
 
-import "fmt"
+//一个文件夹下的所有文件必须使用同一个包名
+
+import (
+	"fmt"
+)
 
 func main() {
 	var username = "huang"
@@ -105,7 +110,8 @@ func main() {
 
 	// goto语句
 	var _aa int = 10
-	LOOP: for _aa < 20 {
+LOOP:
+	for _aa < 20 {
 		if _aa == 15 {
 			/* 跳过迭代 */
 			_aa = _aa + 1
@@ -114,7 +120,6 @@ func main() {
 		fmt.Printf("a的值为 : %d\n", _aa)
 		_aa++
 	}
-
 
 	resNum := num_max(1, 6)
 	fmt.Println("resNum---------------", resNum)
@@ -137,16 +142,3 @@ func num_max(num1, num2 int) int {
 func swap(x, y string) (string, string) {
 	return y, x
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
