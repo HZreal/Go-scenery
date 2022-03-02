@@ -1,9 +1,10 @@
 // 声明当前所在包
-package first
+package main
 
 //一个文件夹下的所有文件必须使用同一个包名
 
 import (
+	"./fir_package"
 	"fmt"
 )
 
@@ -121,11 +122,16 @@ LOOP:
 		_aa++
 	}
 
+	// 函数调用
 	resNum := num_max(1, 6)
 	fmt.Println("resNum---------------", resNum)
-
 	str1, str2 := swap("happy", "nice a day")
 	fmt.Println("swap result-------------", str1, str2)
+
+	//var addArr [] int
+	addArr := []int{1, 2, 3}
+	resArr := fir_package.AddValue(addArr, 5)
+	fmt.Println(resArr)
 
 }
 
