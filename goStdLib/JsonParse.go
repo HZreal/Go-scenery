@@ -42,11 +42,11 @@ func JsonUnmarshall() {
 
 	user := UserInfo{}
 	_ = json.Unmarshal(byteArr, &user) // JSON 转换为 结构体
-	fmt.Println(user)
+	fmt.Println("user ------------", user)
 
 	_map := make(map[string]interface{})
 	_ = json.Unmarshal(byteArr, &_map) // JSON 转换为 map
-	fmt.Println(_map)
+	fmt.Println("_map ------------", _map)
 
 	// 假设不知道jsonStr中键、值的类型，可以将他解析到interface{}
 	var p interface{}
