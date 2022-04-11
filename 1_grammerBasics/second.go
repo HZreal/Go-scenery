@@ -68,7 +68,7 @@ func arrBasics() {
 }
 
 // 切片   -----> 数组的一个引用
-func _slice() {
+func sliceBasics() {
 	// 1. 切片：切片是`数组的一个引用`，因此`切片是引用类型`。但`自身是结构体`，值拷贝传递。
 	// 2. 切片的长度可以改变，因此，切片是一个可变的数组。
 	// 3. 切片遍历方式和数组一样，可以用len()求长度。表示可用元素数量，读写操作不能超过该限制。
@@ -344,7 +344,7 @@ func pointArr() {
 func main() {
 
 	//arrBasics()
-	//_slice()
+	//sliceBasics()
 	//pointBasics()
 	mapBasics()
 	//pointArr()

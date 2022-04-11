@@ -14,6 +14,8 @@ var filename2 = "goStdLib/456.txt"
 
 func useIOUtilToRW() {
 
+	// ioutil.ReadFile  WriteFile方法最终调用的还是os包中的指定模式权限的OpenFile方法
+
 	// 读文件
 	file, _ := ioutil.ReadFile(filename1)
 	fmt.Println(file) // []byte
@@ -34,7 +36,9 @@ func useOSToRead() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer file.Close()
+	defer func() {
+		_ = file.Close()
+	}()
 
 	// 打开文件(实际是调用指定模式和权限的 OpenFile)
 	file1, err := os.Open(filename1)
@@ -58,22 +62,33 @@ func useOSToRead() {
 
 	// bufio.NewReader通过file1创建reader缓冲区，将文件中的内容预加载到缓存中，方便快速读取出来。当然，文件的内容非常多的时候，它是一部分一部分加载到缓冲区的，并不会将所有内容一次全部加载完
 	reader := bufio.NewReader(file)
-	//reader.Read([]byte)
-	//_, _ =reader.ReadBytes('\n')
 	//b3, _ := reader.Peek(4)
 	//fmt.Println(string(b3))
+	//reader.Read([]byte)
+	// 使用 ReadBytes('\n')
+	//for {
+	//	// 读取一行数据
+	//	buf, err := reader.ReadBytes('\n') // 参数delim为分隔符，每次读到遇到分隔符停止，若在找到分隔符之前遇到错误(通常是io.EOF)，它会返回在错误和错误本身之前读到的数据
+	//	if err != nil && err == io.EOF {
+	//		fmt.Println("读完了所有数据")
+	//		fmt.Println(string(buf))
+	//		break
+	//	} else if err != nil {
+	//		fmt.Println("ReaderBytes 读取出错:", err)
+	//		break
+	//	}
+	//	fmt.Println(string(buf))
+	//}
+	// 使用 ReadString('\n')
 	for {
-		//读取一行数据
-		buf, err := reader.ReadBytes('\n') // 参数delim为分隔符，每次读到遇到分隔符停止，若在找到分隔符之前遇到错误(通常是io.EOF)，它会返回在错误和错误本身之前读到的数据
-		if err != nil && err == io.EOF {
+		// 读取一行数据
+		buf, err := reader.ReadString('\n')
+
+		if err == io.EOF {
 			fmt.Println("读完了所有数据")
-			fmt.Println(string(buf))
-			return
-		} else if err != nil {
-			fmt.Println("ReaderBytes 读取出错:", err)
-			return
+			break
 		}
-		fmt.Println(string(buf))
+		fmt.Println(buf)
 	}
 
 }
@@ -85,6 +100,7 @@ func useOSToWrite() {
 		panic(err)
 	}
 	defer func() {
+		fmt.Println("关闭文件")
 		_ = file.Close()
 	}()
 
@@ -103,6 +119,6 @@ func useOSToWrite() {
 
 func main() {
 	//useIOUtilToRW()
-	useOSToRead()
-	//useOSToWrite()
+	//useOSToRead()
+	useOSToWrite()
 }

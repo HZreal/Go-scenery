@@ -1,9 +1,14 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"goBasics/fir_package"
 	"math"
+	"net/http"
+	"os"
+	"sync"
+	"time"
 )
 
 // 类型相同的不定参数
@@ -203,6 +208,7 @@ func myClosure(a int) func() int { // 在此闭包中，可以认为 i := a + 10
 	}
 	return inner
 }
+
 func testClosure() func() { // 在汇编层 ，testClosure 实际返回的是 FuncVal{ func_address, closure_var_pointer ... }对象，其中包含了匿名函数地址、闭包对象指针。当调 匿名函数时，只需以某个寄存器传递该对象即可
 	a := 10
 	fmt.Printf("a (%p) = %d\n", &a, a)
@@ -289,6 +295,103 @@ func recursiveFuncBasic() {
 	}
 }
 
+// 大量循环下 测试滥用defer
+var lock sync.Mutex
+
+func test1() {
+	lock.Lock()
+	lock.Unlock()
+}
+func test2() {
+	lock.Lock()
+	defer lock.Unlock()
+}
+func testWithoutDefer() {
+	t1 := time.Now()
+
+	for i := 0; i < 10000; i++ {
+		test1()
+	}
+	elapsed := time.Since(t1)
+	fmt.Println("test elapsed: ", elapsed)
+}
+func testWithDefer() {
+	t1 := time.Now()
+
+	for i := 0; i < 10000; i++ {
+		test2()
+	}
+	elapsed := time.Since(t1)
+	fmt.Println("testdefer elapsed: ", elapsed)
+}
+
+// defer 与 closure
+func testDeferWithMulClosure(a, b int) (res int, err error) {
+
+	defer fmt.Printf("first defer err %v\n", err)
+	defer func(err error) {
+		fmt.Printf("second defer err %v\n", err)
+	}(err)
+	defer func() {
+		fmt.Printf("third defer err %v\n", err)
+	}()
+	if b == 0 {
+		err = errors.New("divided by zero!")
+		return
+	}
+
+	res = a / b
+	return
+}
+
+// defer 与 return
+func testDeferWithReturn() (i int) {
+	i = 0
+	defer func() {
+		fmt.Println(i)
+	}()
+	return 2 // 在有具名返回值的函数中（这里具名返回值为 i），执行 return 2 的时候实际上已经将 i 的值重新赋值为 2。所以defer closure 输出结果为 2 而不是 1
+}
+
+// defer nil 函数
+func testDeferWithNil() {
+	var run func() = nil
+	defer run()
+	fmt.Println("runs")
+}
+
+// 错误的位置使用 defer
+func useDeferIncorrectly() error {
+	res, err := http.Get("https://www.baidu.com")
+	defer res.Body.Close()
+	if err != nil {
+		return err
+	}
+
+	// ..code...
+
+	return nil
+}
+
+// 正确使用 defer
+func useDeferCorrectly() error {
+	// 当有错误的时候，err 会被返回，否则当整个函数返回的时候，会关闭 res.Body
+
+	// 在这里，你同样需要检查 res 的值是否为 nil ，这是 http.Get 中的一个警告。通常情况下，出错的时候，返回的内容应为空并且错误会被返回，可当你获得的是一个重定向 error 时， res 的值并不会为 nil ，但其又会将错误返回。上面的代码保证了无论如何 Body 都会被关闭，如果你没有打算使用其中的数据，那么你还需要丢弃已经接收的数据
+	res, err := http.Get("https://www.baidu.com")
+	if res != nil {
+		defer res.Body.Close()
+	}
+
+	if err != nil {
+		return err
+	}
+
+	// ..code...
+
+	return nil
+}
+
 // 延迟调用defer
 func deferBasics() {
 	//defer特性：
@@ -317,21 +420,330 @@ func deferBasics() {
 	// 即return后面的语句执行完，再去执行defer，最后才真正的函数返回，所以defer依然可以修改本应该返回的结果!
 	//详看  returnFunc3  returnFunc4
 
-	//defer 执行顺序是先进后出   这个很自然,后面的语句会依赖前面的资源，因此如果先前面的资源先释放了，后面的语句就没法执行了
+	//defer 执行顺序是先进后出   这个很自然，后面的语句会依赖前面的资源，因此如果先前面的资源先释放了，后面的语句就没法执行了
 	//var whatever [5]struct{}
 	//for i, _ := range whatever {
-	//	defer fmt.Println(i)                  // 由于先进后出，输出顺序为 4,3,2,1,0
+	//	defer fmt.Println(i)                  // 每次循环时将defer操作放入队列，最后逆序执行，输出顺序为 4,3,2,1,0
 	//}
 
 	// defer 碰上闭包
-	var whatever2 [5]struct{}
-	for i, _ := range whatever2 {
-		f := func() { fmt.Println(i) } // 闭包
-		defer f()                      // 函数正常执行,由于闭包用到的变量 i 在执行的时候已经变成4,所以输出全都是4
-	}
+	//var whatever2 [5]struct{}
+	//for i, _ := range whatever2 {
+	//	f := func() {                        // 闭包
+	//		fmt.Println(i)                   // 由于闭包用到的变量 i 在逆序执行的时候已经变成4，所以输出全都是4
+	//	}
+	//	defer f()
+	//}
+
+	// 将循环变量i通过参数temp传入闭包(值拷贝)，则在defer逆序执行时，每个闭包中的变量参数因为值拷贝，都不一样了
+	//var whatever3 [5]struct{}
+	//for i, _ := range whatever3 {
+	//	f := func(j int) {
+	//		fmt.Println(i, j)               // 由于j是值拷贝传进闭包，i依然为循环变量 所以defer逆序执行的时候，闭包用到的参数j分别是4,3,2,1,0，i分别是4,4,4,4,4，所以输出第一列：4,4,4,4,4，第二列：4,3,2,1,0
+	//	}
+	//	temp := i
+	//	defer f(temp)
+	//}
+
+	// 哪怕某个defer延迟调用发生错误，这些调用依旧会被执行
+
+	// 滥用 defer 可能会导致性能问题，尤其是在一个 "大循环" 里
+	//testWithoutDefer()
+	//testWithDefer()
+
+	// defer陷阱
+	//defer 与 closure
+	//如果 defer 后面跟的不是一个 closure 最后执行的时候我们得到的并不是最新的值
+	//_, _ = testDeferWithMulClosure(2, 0)
+
+	//defer 与 return
+	//testDeferWithReturn()
+
+	//defer nil 函数
+	defer func() {
+		if err := recover(); err != nil {
+			fmt.Println(err)
+		}
+	}()
+	testDeferWithNil() // 名为 testDeferWithNil 的函数一直运行至结束，然后 defer 函数会被执行且会因为值为 nil 而产生 panic 异常。然而值得注意的是，run() 的声明是没有问题，因为在testDeferWithNil函数运行完成后它才会被调用
+
+	// 在错误的位置使用 defer
+	useDeferIncorrectly()
+	// 解决方案:   总是在一次成功的资源分配下面使用 defer ，对于这种情况来说意味着：当且仅当 http.Get 成功执行时才使用 defer
+	useDeferCorrectly()
+
+	// f.Close() 可能会返回一个错误，可这个错误会被我们忽略掉
 
 	//
 
+	//
+
+}
+
+// 一般使用
+func usePanicRecover() {
+	defer func() {
+		if err := recover(); err != nil {
+			println(err.(string)) // 将 interface{} 转型为具体类型
+		}
+	}()
+
+	panic("panic error!")
+
+}
+
+// 向已关闭的通道发送数据
+func sendToClosedChannel() {
+	defer func() {
+		if err := recover(); err != nil {
+			fmt.Println("err:", err)
+		}
+	}()
+
+	var ch chan int = make(chan int, 10)
+	close(ch)
+	ch <- 1
+}
+
+// 延迟调用中引发的错误
+func errRaisedInDefer() {
+	defer func() {
+		fmt.Println(recover()) // 仅最后一个错误可被捕获
+	}()
+
+	defer func() {
+		panic("defer panic")
+	}()
+
+	panic("test panic")
+}
+
+//
+func mulDeferRecover() {
+	defer func() {
+		fmt.Println(recover()) //有效
+	}()
+	defer recover()              //无效！
+	defer fmt.Println(recover()) //无效！
+	defer func() {
+		func() {
+			println("defer inner")
+			recover() //无效！
+		}()
+	}()
+
+	panic("test panic")
+}
+
+//
+func protectCodeSegmentWithAnonymousFunc(x, y int) {
+	var z int
+
+	func() {
+		defer func() {
+			if recover() != nil {
+				z = 0
+			}
+		}()
+		panic("test panic")
+		z = x / y
+		return
+	}()
+
+	fmt.Printf("x / y = %d\n", z)
+}
+
+// 创建实现 error 接口的错误对象
+var ErrDivByZero = errors.New("division by zero")
+
+func div(x, y int) (int, error) {
+	if y == 0 {
+		return 0, ErrDivByZero
+	}
+	return x / y, nil
+}
+func newErrorsAndTest() {
+	defer func() {
+		fmt.Println(recover())
+	}()
+	switch z, err := div(10, 0); err {
+	case nil:
+		println(z)
+	case ErrDivByZero:
+		panic(err)
+	}
+}
+
+func Try(fun func(), handler func(interface{})) { // 参数fun为执行函数，参数handler为异常处理函数
+	defer func() {
+		if err := recover(); err != nil {
+			handler(err) // handler函数的参数为interface{}类型
+		}
+	}()
+	fun()
+}
+
+// 类似 try catch 的异常处理
+func tryCatch() {
+	execFunc := func() { panic("test panic") }
+	handleFunc := func(err interface{}) { fmt.Println(err) }
+	Try(execFunc, handleFunc)
+}
+
+// 自定义异常
+type PathError struct {
+	path       string
+	op         string
+	createTime string
+	message    string
+}
+
+func (p *PathError) Error() string {
+	return fmt.Sprintf("path=%s \nop=%s \ncreateTime=%s \nmessage=%s", p.path,
+		p.op, p.createTime, p.message)
+}
+func Open(filename string) error { // 返回值 error 为一个接口  类型PathError实现了error() string方法，即实现了这个接口
+
+	file, err := os.Open(filename)
+	if err != nil {
+		return &PathError{
+			path:       filename,
+			op:         "read",
+			message:    err.Error(),
+			createTime: fmt.Sprintf("%v", time.Now()),
+		}
+	}
+
+	defer file.Close()
+	return nil
+}
+
+// panic & Recover
+func panicRecoverBasics() {
+
+	// panic
+	//    1、内置函数
+	//    2、假如函数F中书写了panic语句，会终止其后要执行的代码，在panic所在函数F内如果存在要执行的defer函数列表，按照defer的逆序执行
+	//    3、返回函数F的调用者G，在G中，调用函数F语句之后的代码不会执行，假如函数G中存在要执行的defer函数列表，按照defer的逆序执行
+	//    4、直到goroutine整个退出，并报告错误
+
+	// recover
+	//	  1、内置函数
+	//    2、用来控制一个goroutine的panicking行为，捕获panic，从而影响应用的行为
+	//    3、一般的调用建议
+	//        a). 在defer函数中，通过recever来终止一个goroutine的panicking过程，从而恢复正常代码的执行
+	//        b). 可以获取通过panic传递的error
+
+	// 注意：
+	//     1.利用recover处理panic指令，defer 必须放在 panic 之前定义，另外 recover 只有在 defer 调用的函数中才有效。否则当panic时，recover无法捕获到panic，无法防止panic扩散。
+	//     2.recover 处理异常后，逻辑并不会恢复到 panic 那个点去，函数跑到 defer 之后的那个点。
+	//     3.多个 defer 会形成 defer 栈，后定义的 defer 语句会被最先调用。
+
+	// 由于 panic、recover 参数类型为 interface{}，因此可抛出任何类型对象
+	//    func panic(v interface{})
+	//    func recover() interface{}
+	//usePanicRecover()
+
+	// 向已关闭的通道发送数据会引发panic
+	//sendToClosedChannel()
+
+	// 延迟调用中引发的错误，可被后续延迟调用捕获，但仅最后一个错误可被捕获
+	//errRaisedInDefer()
+
+	// 捕获函数 recover 只有在延迟调用内直接调用才会终止错误，否则总是返回 nil。任何未捕获的错误都会沿调用堆栈向外传递
+	//mulDeferRecover()
+
+	// 如果需要保护代码 段，可将代码块重构成匿名函数，如此可确保后续代码被执
+	//protectCodeSegmentWithAnonymousFunc(2, 1)
+
+	// 除用 panic 引发中断性错误外，还可返回 error 类型错误对象来表示函数调用状态。
+	// 标准库 errors.New 和 fmt.Errorf 函数用于创建实现 error 接口的错误对象。通过判断错误对象实例来确定具体错误类型
+	//newErrorsAndTest()
+
+	// Go实现类似 try catch 的异常处理
+	tryCatch()
+
+	// 如何区别使用 panic 和 error 两种方式?
+	// 惯例是:导致关键流程出现不可修复性错误的使用 panic，其他使用 error。
+
+	// 自定义异常
+	// 类型：PathError   定义error方法
+	err := Open("/Users/5lmh/Desktop/go/src/test.txt")
+	switch v := err.(type) {
+	case *PathError:
+		fmt.Println("get path error,", v)
+	default:
+
+	}
+
+}
+
+// 单元测试
+func unitTestBasics() {
+	// 1.1. go test工具
+	// go test命令会遍历所有的*_test.go文件中符合上述命名规则的函数，然后生成一个临时的main包用于调用相应的测试函数，然后构建并运行、报告测试结果，最后清理测试中生成的临时文件
+
+	// 1.2. 测试函数
+	// 格式：每个测试函数必须导入testing包，测试函数的名字必须以Test开头，参数类型必须为*testing.T，可选的后缀名必须以大写字母开头
+	// 示例：定义一个split的包，包中定义了一个Split函数，再创建一个split_test.go的测试文件，并定义一个测试函数TestSplit(t *testing.T) {}， 包目录下执行 go test
+
+	// go test命令添加-v参数，查看测试函数名称和运行时间
+	// go test命令后添加-run参数，它对应一个正则表达式，只有函数名匹配上的测试函数才会被go test命令执行
+
+	// 注意：当我们修改了我们的代码之后不要仅仅执行那些失败的测试函数，我们应该完整的运行所有的测试，保证不会因为修改代码而引入了新的问题
+
+	// 1.3. 测试组
+	// 将待测函数的参数输入与返回值输出抽象为一个测试用例类型struct，多个测试即对应一个结构体数组，遍历操作这个结构体数组进行测试即可，如TestSplit2
+
+	// 1.4. 子测试
+	// 如果测试用例比较多的时候，我们是没办法一眼看出来具体是哪个测试用例失败，将上面的结构体数组改为map[string]struct{}
+	// 同时Go1.7+中新增了子测试， 如：TestSplit3
+	// 可以通过/来指定要运行的子测试用例，例如：go test -v -run=Split/simple只会运行simple对应的子测试用例
+
+	// 1.5. 测试覆盖率
+	// 测试覆盖率是你的代码被测试套件覆盖的百分比。通常我们使用的都是语句的覆盖率，也就是在测试中至少被运行一次的代码占总代码的比例
+	// Go提供内置功能来检查你的代码覆盖率。我们可以使用go test -cover来查看测试覆盖率
+	// -coverprofile参数，用来将覆盖率相关的记录信息输出到一个文件
+
+	// 1.6. 基准测试
+	// 基准测试就是在一定的工作负载之下检测程序性能的一种方法
+	// 1.6.1. 基准测试函数格式
+	// 基准测试以Benchmark为前缀，需要一个*testing.B类型的参数b，基准测试必须要执行b.N次，这样的测试才有对照性，b.N的值是系统根据实际情况去调整的，从而保证测试的稳定性
+	// 1.6.2. 基准测试示例
+	// 基准测试并不会默认执行，需要增加-bench参数，所以我们通过执行go test -bench=Split命令执行基准测试，终端输出结果：其中BenchmarkSplit-8表示对Split函数进行基准测试，数字8表示GOMAXPROCS的值，这个对于并发基准测试很重要。10000000和203ns/op表示每次调用Split函数耗时203ns，这个结果是10000000次调用的平均值
+	// -benchmem参数，来获得内存分配的统计数据
+	// 1.6.3. 性能比较函数
+
+	// 1.6.4. 重置时间
+
+	// 1.6.5. 并行测试
+
+	// 1.7. Setup与TearDown
+	// 测试程序有时需要在测试之前进行额外的设置（setup）或在测试之后进行拆卸（teardown）
+
+	// 1.7.2. 子测试的Setup与Teardown
+
+	// 1.7.1. TestMain
+
+	// 1.8. 示例函数
+
+	// 1.8.1. 示例函数的格式
+
+	// 1.8.2. 示例函数示例
+
+}
+
+// 压力测试
+func pressureTestBasics() {
+
+	// Go编写测试用例
+	// 新建一个项目目录gotest,这样我们所有的代码和测试代码都在这个目录下，在该目录下面创建两个文件：gotest.go和gotest_test.go
+
+	// 压力测试用来检测函数(方法）的性能，和编写单元功能测试的方法类似
+	// 压力测试用例必须遵循如下格式，其中XXX可以是任意字母数字的组合，但是首字母不能是小写字母
+	//func BenchmarkXXX(b *testing.B) { ... }
+	// go test不会默认执行压力测试的函数，如果要执行压力测试需要带上参数-test.bench，语法:-test.bench="test_name_regex",例如go test -test.bench=".*"表示测试全部的压力测试函数
+	// 在压力测试用例中,请记得在循环体内使用testing.B.N,以使测试可以正常的运行 文件名也必须以_test.go结尾
 }
 
 func main() {
@@ -348,8 +760,13 @@ func main() {
 	//closureBasics()
 	//recursiveFuncBasic()
 
-	deferBasics()
+	//deferBasics()
 
+	//panicRecoverBasics()
+
+	//unitTestBasics()
+
+	//pressureTestBasics()
 }
 
 func numMax(num1, num2 int) int {
