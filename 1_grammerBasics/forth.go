@@ -41,19 +41,19 @@ func returnFunc1(a, b int) (c, d int) { // 返回值指定了变量c
 	c = a + b
 	d = a - b
 	return // return后未指定返回什么，则返回定义中指定返回的c
-	//return 22, 12                              // return后有返回值，就使用return后面的返回值
+	// return 22, 12                              // return后有返回值，就使用return后面的返回值
 }
 
 // 命名返回参数(隐式返回、显式返回)
 func returnFunc2(a, b int) (c int) { // 返回值指定了变量c
-	//c = a + b
-	//return                                  	 // 隐式返回
+	// c = a + b
+	// return                                  	 // 隐式返回
 
 	// 当重新定义局部变量c时，必须显式返回
-	//var c = a + b      // 重定义c不能在当前级别的位置
+	// var c = a + b      // 重定义c不能在当前级别的位置
 	{
 		var c = a + b
-		//return            // 报错
+		// return            // 报错
 		return c // 必须显示(指定c)返回
 	}
 }
@@ -77,35 +77,35 @@ func returnFunc4(a, b int) (c int) {
 
 // 函数
 func funBasics() {
-	//1.
-	//函数声明包含一个函数名，参数列表， 返回值列表和函数体，函数可以没有参数或接受多个参数
-	//函数是第一类对象，可作为参数传递。建议将复杂签名定义为函数类型
-	//没有函数体的函数声明，则该函数不是以Go实现的。通常以汇编语言实现
+	// 1.
+	// 函数声明包含一个函数名，参数列表， 返回值列表和函数体，函数可以没有参数或接受多个参数
+	// 函数是第一类对象，可作为参数传递。建议将复杂签名定义为函数类型
+	// 没有函数体的函数声明，则该函数不是以Go实现的。通常以汇编语言实现
 
 	// 2. 参数
-	//值传递：指在调用函数时将实际参数复制一份传递到函数中，这样在函数中如果对参数进行修改，将不会影响到实际参数
-	//引用传递：是指在调用函数时将实际参数的地址传递到函数中，那么在函数中对参数所进行的修改，将影响到实际参数
-	//默认情况，Go语言使用的是值传递，即在调用过程中不会影响到实际参数
-	//注意1：无论是值传递，还是引用传递，传递给函数的都是变量的副本，不过，值传递是值的拷贝。引用传递是地址的拷贝，一般来说，地址拷贝更为高效。而值拷贝取决于拷贝的对象大小，对象越大，则性能越低。
-	//注意2：map、slice、chan、指针、interface默认以引用的方式传递
+	// 值传递：指在调用函数时将实际参数复制一份传递到函数中，这样在函数中如果对参数进行修改，将不会影响到实际参数
+	// 引用传递：是指在调用函数时将实际参数的地址传递到函数中，那么在函数中对参数所进行的修改，将影响到实际参数
+	// 默认情况，Go语言使用的是值传递，即在调用过程中不会影响到实际参数
+	// 注意1：无论是值传递，还是引用传递，传递给函数的都是变量的副本，不过，值传递是值的拷贝。引用传递是地址的拷贝，一般来说，地址拷贝更为高效。而值拷贝取决于拷贝的对象大小，对象越大，则性能越低。
+	// 注意2：map、slice、chan、指针、interface默认以引用的方式传递
 
-	//同类型的不定传参
-	//Golang 可变参数本质上就是 slice。只能有一个，且必须是最后一个
-	//在参数赋值时可以不用用一个一个的赋值，可以直接传递一个数组或者切片，特别注意的是在参数后加上“…”即可
-	//func add(args ...int) {    //0个或多个参数
-	//}
-	//func add(a int, args…int) int {    //1个或多个参数
-	//}
-	//func add(a int, b int, args…int) int {    //2个或多个参数
-	//}
-	//注意：其中args是一个slice，我们可以通过arg[index]依次访问所有参数,通过len(arg)来判断传递参数的个数
+	// 同类型的不定传参
+	// Golang 可变参数本质上就是 slice。只能有一个，且必须是最后一个
+	// 在参数赋值时可以不用用一个一个的赋值，可以直接传递一个数组或者切片，特别注意的是在参数后加上“…”即可
+	// func add(args ...int) {    //0个或多个参数
+	// }
+	// func add(a int, args…int) int {    //1个或多个参数
+	// }
+	// func add(a int, b int, args…int) int {    //2个或多个参数
+	// }
+	// 注意：其中args是一个slice，我们可以通过arg[index]依次访问所有参数,通过len(arg)来判断传递参数的个数
 
-	//不同类型的不定传参： 就是函数的参数和每个参数的类型都不是固定的。
-	//用interface{}传递任意类型数据是Go语言的惯例用法，而且interface{}是类型安全的
-	//func add(args ...interface{}) {
-	//}
+	// 不同类型的不定传参： 就是函数的参数和每个参数的类型都不是固定的。
+	// 用interface{}传递任意类型数据是Go语言的惯例用法，而且interface{}是类型安全的
+	// func add(args ...interface{}) {
+	// }
 
-	//3. 返回值
+	// 3. 返回值
 	// "_"标识符，用来忽略函数的某个返回值
 	// 空返回  如函数emptyReturnFunc， returnFunc1
 	// 返回值不能用容器对象接收多返回值。只能用多个变量，或 "_" 忽略
@@ -113,16 +113,16 @@ func funBasics() {
 	// 			s = test()   		// 报错: multiple-value test() in single-value context
 	//			x, _ := test()   	// 正确
 	// 多返回值可直接作为其他函数调用实参
-	//funcParamsWithUncertianLength2(returnFunc1(20, 10))
+	// funcParamsWithUncertianLength2(returnFunc1(20, 10))
 
 	// 命名返回参数可看做与形参类似的局部变量，最后由 return 隐式返回  如函数 returnFunc1、returnFunc2
 	// 命名返回参数可被同名局部变量遮蔽，此时必须显式返回 如函数 returnFunc2
-	//命名返回参数允许 defer 延迟调用通过闭包读取和修改 如函数 returnFunc3
-	//ret3 := returnFunc3(20, 13)
-	//fmt.Println(ret3)
-	//显式 return 返回前，会先修改命名返回参数 如函数 returnFunc4
-	//ret4 := returnFunc4(20, 13)
-	//fmt.Println(ret4)
+	// 命名返回参数允许 defer 延迟调用通过闭包读取和修改 如函数 returnFunc3
+	// ret3 := returnFunc3(20, 13)
+	// fmt.Println(ret3)
+	// 显式 return 返回前，会先修改命名返回参数 如函数 returnFunc4
+	// ret4 := returnFunc4(20, 13)
+	// fmt.Println(ret4)
 
 	// 只要声明函数的返回值变量名称，就会在函数初始化时候为之赋值为0，而且在函数体作用域可见
 	// 如 returnFunc2定义了返回变量c int，则函数初始化时c被赋予int型的零值，函数域内可用
@@ -138,9 +138,9 @@ func format(fn FormatFunc, s string, x, y int) string { // 函数作为参数
 
 // 匿名函数
 func anonymousFunc() {
-	//函数可以像普通变量一样被传递或使用
-	//匿名函数由一个不带函数名的函数声明和函数体组成。匿名函数的优越性在于可以直接使用函数内的变量，不必申明
-	//匿名函数可赋值给变量，做为结构字段，或者在 channel 里传送
+	// 函数可以像普通变量一样被传递或使用
+	// 匿名函数由一个不带函数名的函数声明和函数体组成。匿名函数的优越性在于可以直接使用函数内的变量，不必申明
+	// 匿名函数可赋值给变量，做为结构字段，或者在 channel 里传送
 	getSqrt := func(a float64) float64 {
 		return math.Sqrt(a)
 	}
@@ -192,7 +192,7 @@ func funcCalled() {
 	str1, str2 := swap5("happy", "nice a day")
 	fmt.Println("swap result-------------", str1, str2)
 
-	//var addArr [] int
+	// var addArr [] int
 	addArr := []int{1, 2, 3}
 	resArr := fir_package.AddValue(addArr, 5)
 	fmt.Println(resArr)
@@ -243,19 +243,19 @@ func returnTwoClosure(base int) (func(i int) int, func(j int) int) {
 func closureBasics() {
 	// 闭包是由函数及其相关引用环境组合而成的实体(即：闭包=函数+引用环境)
 	// 闭包可以用来完成信息隐藏
-	//c := myClosure(5) 		     // 创建闭包，传入a=5，得到i=15这个环境，即为一个闭包环境c
-	//c()            			   	 // 闭包调用，闭包内的i=16
-	//c()            				 // 闭包调用，闭包内的i=17
+	// c := myClosure(5) 		     // 创建闭包，传入a=5，得到i=15这个环境，即为一个闭包环境c
+	// c()            			   	 // 闭包调用，闭包内的i=16
+	// c()            				 // 闭包调用，闭包内的i=17
 
 	// 闭包复制的是原对象指针，这就很容易解释延迟引用现象
-	//tC := testClosure()
-	//tC()
+	// tC := testClosure()
+	// tC()
 
 	// 外部引用函数参数局部变量
-	//tmp1 := add(10)
-	//fmt.Println(tmp1(1), tmp1(2))
-	//tmp2 := add(100)    		   // 此时tmp1和tmp2不是一个实体了
-	//fmt.Println(tmp2(1), tmp2(2))
+	// tmp1 := add(10)
+	// fmt.Println(tmp1(1), tmp1(2))
+	// tmp2 := add(100)    		   // 此时tmp1和tmp2不是一个实体了
+	// fmt.Println(tmp2(1), tmp2(2))
 
 	// 返回2个闭包
 	rtc1, rtc2 := returnTwoClosure(50) // 创建闭包
@@ -287,7 +287,7 @@ func fibonaci(i int) int {
 // 递归
 func recursiveFuncBasic() {
 	// 求阶乘
-	//println(factorial(5))
+	// println(factorial(5))
 
 	// 输出fibonaci数列
 	for i := 0; i < 10; i++ {
@@ -394,72 +394,72 @@ func useDeferCorrectly() error {
 
 // 延迟调用defer
 func deferBasics() {
-	//defer特性：
-	//1. 关键字 defer 用于注册延迟调用。
-	//2. 这些调用直到 return 前才被执。因此，可以用来做资源清理。
-	//3. 多个defer语句，按先进后出的方式执行。
-	//4. defer语句中的变量，在defer声明时就决定了。
-	//defer用途：
-	//1. 关闭文件句柄
-	//2. 锁资源释放
-	//3. 数据库连接释放
+	// defer特性：
+	// 1. 关键字 defer 用于注册延迟调用。
+	// 2. 这些调用直到 return 前才被执。因此，可以用来做资源清理。
+	// 3. 多个defer语句，按先进后出的方式执行。
+	// 4. defer语句中的变量，在defer声明时就决定了。
+	// defer用途：
+	// 1. 关闭文件句柄
+	// 2. 锁资源释放
+	// 3. 数据库连接释放
 
-	//1. 每个goroutine都维护一个自己的defer链表。
-	//2. 新注册的defer会被添加到链表头。
-	//3. defer链表执行时，从链表头开始执行。所以表现出倒叙执行。
-	//4. 函数如果注册了defer函数，编译器会在代码底部插入deferreturn函数。
-	//5. 函数执行到deferreturn时，会根据defer结构体中的字段判断当前链表头的defer是不是自己注册的，是则执行并删除，反之，代表当前函数注册的defer已经执行完了，函数结束。
-	//6. go1.12之前(含)使用上述方法执行defer，有一下几个问题:
+	// 1. 每个goroutine都维护一个自己的defer链表。
+	// 2. 新注册的defer会被添加到链表头。
+	// 3. defer链表执行时，从链表头开始执行。所以表现出倒叙执行。
+	// 4. 函数如果注册了defer函数，编译器会在代码底部插入deferreturn函数。
+	// 5. 函数执行到deferreturn时，会根据defer结构体中的字段判断当前链表头的defer是不是自己注册的，是则执行并删除，反之，代表当前函数注册的defer已经执行完了，函数结束。
+	// 6. go1.12之前(含)使用上述方法执行defer，有一下几个问题:
 	//			_defer结构体在堆上分配
 	//			需要操作defer链表
 	//			defer参数需要在堆和栈之间相互拷贝，这导致了defer函数执行效率低，速度慢
-	//7. 1.14版本直接将defer的代码展开，插入到父函数中，避免了在堆上分配_defer结构体，也不用操作链表，性能大幅提升。
-	//8. 1.14之后，发生panic时无法通过defer链表找到展开的defer，所以_defer结构体又增加了几个字段，借助这些信息，panic处理流程可以通过栈扫描的方式找到这些没有被注册到defer链表的defer函数，并按照正确的顺序执行
+	// 7. 1.14版本直接将defer的代码展开，插入到父函数中，避免了在堆上分配_defer结构体，也不用操作链表，性能大幅提升。
+	// 8. 1.14之后，发生panic时无法通过defer链表找到展开的defer，所以_defer结构体又增加了几个字段，借助这些信息，panic处理流程可以通过栈扫描的方式找到这些没有被注册到defer链表的defer函数，并按照正确的顺序执行
 
 	// return之后的语句先执行，defer后的语句后执行
 	// 即return后面的语句执行完，再去执行defer，最后才真正的函数返回，所以defer依然可以修改本应该返回的结果!
-	//详看  returnFunc3  returnFunc4
+	// 详看  returnFunc3  returnFunc4
 
-	//defer 执行顺序是先进后出   这个很自然，后面的语句会依赖前面的资源，因此如果先前面的资源先释放了，后面的语句就没法执行了
-	//var whatever [5]struct{}
-	//for i, _ := range whatever {
+	// defer 执行顺序是先进后出   这个很自然，后面的语句会依赖前面的资源，因此如果先前面的资源先释放了，后面的语句就没法执行了
+	// var whatever [5]struct{}
+	// for i, _ := range whatever {
 	//	defer fmt.Println(i)                  // 每次循环时将defer操作放入队列，最后逆序执行，输出顺序为 4,3,2,1,0
-	//}
+	// }
 
 	// defer 碰上闭包
-	//var whatever2 [5]struct{}
-	//for i, _ := range whatever2 {
+	// var whatever2 [5]struct{}
+	// for i, _ := range whatever2 {
 	//	f := func() {                        // 闭包
 	//		fmt.Println(i)                   // 由于闭包用到的变量 i 在逆序执行的时候已经变成4，所以输出全都是4
 	//	}
 	//	defer f()
-	//}
+	// }
 
 	// 将循环变量i通过参数temp传入闭包(值拷贝)，则在defer逆序执行时，每个闭包中的变量参数因为值拷贝，都不一样了
-	//var whatever3 [5]struct{}
-	//for i, _ := range whatever3 {
+	// var whatever3 [5]struct{}
+	// for i, _ := range whatever3 {
 	//	f := func(j int) {
 	//		fmt.Println(i, j)               // 由于j是值拷贝传进闭包，i依然为循环变量 所以defer逆序执行的时候，闭包用到的参数j分别是4,3,2,1,0，i分别是4,4,4,4,4，所以输出第一列：4,4,4,4,4，第二列：4,3,2,1,0
 	//	}
 	//	temp := i
 	//	defer f(temp)
-	//}
+	// }
 
 	// 哪怕某个defer延迟调用发生错误，这些调用依旧会被执行
 
 	// 滥用 defer 可能会导致性能问题，尤其是在一个 "大循环" 里
-	//testWithoutDefer()
-	//testWithDefer()
+	// testWithoutDefer()
+	// testWithDefer()
 
 	// defer陷阱
-	//defer 与 closure
-	//如果 defer 后面跟的不是一个 closure 最后执行的时候我们得到的并不是最新的值
-	//_, _ = testDeferWithMulClosure(2, 0)
+	// defer 与 closure
+	// 如果 defer 后面跟的不是一个 closure 最后执行的时候我们得到的并不是最新的值
+	// _, _ = testDeferWithMulClosure(2, 0)
 
-	//defer 与 return
-	//testDeferWithReturn()
+	// defer 与 return
+	// testDeferWithReturn()
 
-	//defer nil 函数
+	// defer nil 函数
 	defer func() {
 		if err := recover(); err != nil {
 			fmt.Println(err)
@@ -484,7 +484,7 @@ func deferBasics() {
 func usePanicRecover() {
 	defer func() {
 		if err := recover(); err != nil {
-			println(err.(string)) // 将 interface{} 转型为具体类型
+			fmt.Println(err.(string)) // 将 interface{} 转型为具体类型
 		}
 	}()
 
@@ -521,14 +521,14 @@ func errRaisedInDefer() {
 //
 func mulDeferRecover() {
 	defer func() {
-		fmt.Println(recover()) //有效
+		fmt.Println(recover()) // 有效
 	}()
-	defer recover()              //无效！
-	defer fmt.Println(recover()) //无效！
+	defer recover()              // 无效！
+	defer fmt.Println(recover()) // 无效！
 	defer func() {
 		func() {
 			println("defer inner")
-			recover() //无效！
+			recover() // 无效！
 		}()
 	}()
 
@@ -642,23 +642,23 @@ func panicRecoverBasics() {
 	// 由于 panic、recover 参数类型为 interface{}，因此可抛出任何类型对象
 	//    func panic(v interface{})
 	//    func recover() interface{}
-	//usePanicRecover()
+	usePanicRecover()
 
 	// 向已关闭的通道发送数据会引发panic
-	//sendToClosedChannel()
+	// sendToClosedChannel()
 
 	// 延迟调用中引发的错误，可被后续延迟调用捕获，但仅最后一个错误可被捕获
-	//errRaisedInDefer()
+	// errRaisedInDefer()
 
 	// 捕获函数 recover 只有在延迟调用内直接调用才会终止错误，否则总是返回 nil。任何未捕获的错误都会沿调用堆栈向外传递
-	//mulDeferRecover()
+	// mulDeferRecover()
 
-	// 如果需要保护代码 段，可将代码块重构成匿名函数，如此可确保后续代码被执
-	//protectCodeSegmentWithAnonymousFunc(2, 1)
+	// 如果需要保护代码段，可将代码块重构成匿名函数，如此可确保后续代码被执
+	// protectCodeSegmentWithAnonymousFunc(2, 1)
 
 	// 除用 panic 引发中断性错误外，还可返回 error 类型错误对象来表示函数调用状态。
 	// 标准库 errors.New 和 fmt.Errorf 函数用于创建实现 error 接口的错误对象。通过判断错误对象实例来确定具体错误类型
-	//newErrorsAndTest()
+	// newErrorsAndTest()
 
 	// Go实现类似 try catch 的异常处理
 	tryCatch()
@@ -741,32 +741,32 @@ func pressureTestBasics() {
 
 	// 压力测试用来检测函数(方法）的性能，和编写单元功能测试的方法类似
 	// 压力测试用例必须遵循如下格式，其中XXX可以是任意字母数字的组合，但是首字母不能是小写字母
-	//func BenchmarkXXX(b *testing.B) { ... }
+	// func BenchmarkXXX(b *testing.B) { ... }
 	// go test不会默认执行压力测试的函数，如果要执行压力测试需要带上参数-test.bench，语法:-test.bench="test_name_regex",例如go test -test.bench=".*"表示测试全部的压力测试函数
 	// 在压力测试用例中,请记得在循环体内使用testing.B.N,以使测试可以正常的运行 文件名也必须以_test.go结尾
 }
 
 func main() {
 
-	//funBasics()
-	//funcParamsWithUncertianLength("sum: %d", 1, 2, 3, 4, 5)
-	//_slice := []int{1, 2, 3, 4, 5}
-	//funcParamsWithUncertianLength("sum: %d", _slice...)    // 注意：使用 slice 对象做变参时，必须展开
-	//funcParamsWithUncertianLength2("first params", 12, "third params", 32, [2]int{1, 2}, map[string]string{"name": "hu", "age": "22"})
-	//anonymousFunc()
-	//funcCalled()
-	//dataTypeConvert()
+	// funBasics()
+	// funcParamsWithUncertianLength("sum: %d", 1, 2, 3, 4, 5)
+	// _slice := []int{1, 2, 3, 4, 5}
+	// funcParamsWithUncertianLength("sum: %d", _slice...)    // 注意：使用 slice 对象做变参时，必须展开
+	// funcParamsWithUncertianLength2("first params", 12, "third params", 32, [2]int{1, 2}, map[string]string{"name": "hu", "age": "22"})
+	// anonymousFunc()
+	// funcCalled()
+	// dataTypeConvert()
 
-	//closureBasics()
-	//recursiveFuncBasic()
+	// closureBasics()
+	// recursiveFuncBasic()
 
-	//deferBasics()
+	// deferBasics()
 
-	//panicRecoverBasics()
+	// panicRecoverBasics()
 
-	//unitTestBasics()
+	// unitTestBasics()
 
-	//pressureTestBasics()
+	// pressureTestBasics()
 }
 
 func numMax(num1, num2 int) int {

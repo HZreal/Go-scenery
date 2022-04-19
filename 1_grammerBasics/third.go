@@ -15,7 +15,7 @@ type Book struct { // 自定义新的数据类型Book，具有struct的特性   
 	author     string
 	publicDate string
 	Desc       string // 结构体中字段大写开头表示可公开访问，小写表示私有（仅在定义当前结构体的包中可访问）
-	//string                 // 匿名字段，默认采用类型名作为字段名，结构体要求字段名称必须唯一，因此一个结构体中同种类型的匿名字段只能有一个
+	// string                 // 匿名字段，默认采用类型名作为字段名，结构体要求字段名称必须唯一，因此一个结构体中同种类型的匿名字段只能有一个
 
 }
 
@@ -49,7 +49,7 @@ func (b Book) setBookId2(newAuthor string) {
 
 // 自定义类型，并基于这个类型定义类型方法
 type myInt int // 定义类型
-func (m myInt) SayHello() { //SayHello 为myInt添加一个SayHello的方法
+func (m myInt) SayHello() { // SayHello 为myInt添加一个SayHello的方法
 	fmt.Println("Hello, 我是一个int。")
 }
 
@@ -72,7 +72,7 @@ func (a *Animal) move() {
 type Dog struct {
 	name    string
 	feet    int
-	*Animal //通过嵌套匿名结构体实现继承，默认字段名为Animal，类型为指针类型
+	*Animal // 通过嵌套匿名结构体实现继承，默认字段名为Animal，类型为指针类型
 }
 
 func (d *Dog) wang() {
@@ -89,8 +89,8 @@ func structBasics() {
 	// 别名定义： type TypeAlias = Type
 	type aliasInt = int
 	// 之前见过的rune和byte就是类型别名，他们的定义如下:
-	//type byte = uint8
-	//type rune = int32
+	// type byte = uint8
+	// type rune = int32
 	var a newInt
 	var b aliasInt
 	fmt.Printf("type of a:%T\n", a)
@@ -98,20 +98,20 @@ func structBasics() {
 
 	// 实例化
 	var book1 = Book{"流浪记", 1, "huang", "2019-2-16", "a funny story"} // 值的列表(位置传参)初始化，不能少字段，顺序对应
-	//var book2 = Book{title: "流浪记", bookId: 1, author: "huang", publicDate: "2019-2-16", desc: "a funny story"}  // 键值对初始化
-	//var book3 = Book{title: "流浪记", bookId: 1, author: "huang"} // 关键字传参可以少值，忽略的默认为空
-	//fmt.Println(book1, book2, book3)
+	// var book2 = Book{title: "流浪记", bookId: 1, author: "huang", publicDate: "2019-2-16", desc: "a funny story"}  // 键值对初始化
+	// var book3 = Book{title: "流浪记", bookId: 1, author: "huang"} // 关键字传参可以少值，忽略的默认为空
+	// fmt.Println(book1, book2, book3)
 
-	//var book4 Book
-	//book4.bookId = 2
-	//book4.author = "zzz"
-	//fmt.Printf("book4 bookID is %d\n", book4.bookId)
-	//fmt.Printf("book4 author is %s\n", book4.author)
+	// var book4 Book
+	// book4.bookId = 2
+	// book4.author = "zzz"
+	// fmt.Printf("book4 bookID is %d\n", book4.bookId)
+	// fmt.Printf("book4 author is %s\n", book4.author)
 
 	// 匿名结构体
-	//var user struct{name string; age int}
-	//user.name = "hh"
-	//user.age = 22
+	// var user struct{name string; age int}
+	// user.name = "hh"
+	// user.age = 22
 
 	// 创建指针类型结构体
 	// 使用new关键字对结构体进行实例化，得到的是结构体的地址
@@ -121,8 +121,8 @@ func structBasics() {
 
 	// 取结构体的地址实例化
 	p3 := &Book{}
-	fmt.Printf("%T\n", p3)     //*main.Book
-	fmt.Printf("p3=%#v\n", p3) //p3=&main.Book{title:"", bookId:0, author:"", publicDate:"", desc:""}
+	fmt.Printf("%T\n", p3)     // *main.Book
+	fmt.Printf("p3=%#v\n", p3) // p3=&main.Book{title:"", bookId:0, author:"", publicDate:"", desc:""}
 	p3.title = "Go"            // 语法糖写法，   其实在底层是(*p3).title = "Go"
 	p3.bookId = 6
 
@@ -135,7 +135,7 @@ func structBasics() {
 	// 方法的定义格式如下：
 	// func (接收者变量 接收者类型) 方法名(参数列表) (返回参数) {
 	//	函数体
-	//}
+	// }
 	p5 := newBook("流浪记", 1, "huang", "2019-2-16", "story")
 	p5.getPublicDate()
 	// 指针类型的接收者   调用方法时修改接收者指针的任意成员变量，在方法结束后，修改都是有效的
@@ -174,7 +174,7 @@ func structBasics() {
 	fmt.Println(book1Pointer.bookId)
 }
 
-//Student 学生
+// Student 学生
 type Student struct {
 	ID     int    `json:"id" bson:"id" xml:"id"` // Tag是结构体的元信息，可以在运行的时候通过反射的机制读取出来，通过指定tag实现json序列化该字段时的key
 	Gender string `json:"gender"`                // json序列化是默认使用字段名作为key
@@ -182,7 +182,7 @@ type Student struct {
 	desc   string // 私有不能被json包访问
 }
 
-//Class 班级
+// Class 班级
 type Class struct {
 	Title    string
 	Students []*Student
@@ -308,9 +308,9 @@ type Mover interface {
 }
 type fish struct{}
 
-//func (d fish) move() {
+// func (d fish) move() {
 //	fmt.Println("鱼会游")
-//}
+// }
 func (d fish) move() {
 	fmt.Println("鱼会游")
 }
@@ -400,9 +400,9 @@ func interfaceBasics() {
 	//			…
 	//		}
 	// 其中：
-	//1.接口名：使用type将接口定义为自定义的类型名。Go语言的接口在命名时，一般会在单词后面添加er，如有写操作的接口叫Writer，有字符串功能的接口叫Stringer等。接口名最好要能突出该接口的类型含义。
-	//2.方法名：当方法名首字母是大写且这个接口类型名首字母也是大写时，这个方法可以被接口所在的包（package）之外的代码访问。
-	//3.参数列表、返回值列表：参数列表和返回值列表中的参数变量名可以省略。
+	// 1.接口名：使用type将接口定义为自定义的类型名。Go语言的接口在命名时，一般会在单词后面添加er，如有写操作的接口叫Writer，有字符串功能的接口叫Stringer等。接口名最好要能突出该接口的类型含义。
+	// 2.方法名：当方法名首字母是大写且这个接口类型名首字母也是大写时，这个方法可以被接口所在的包（package）之外的代码访问。
+	// 3.参数列表、返回值列表：参数列表和返回值列表中的参数变量名可以省略。
 
 	// 注意：只有当有两个或两个以上的具体类型必须以相同的方式进行处理时才需要定义接口。不要为了接口而写接口，那样只会增加不必要的抽象，导致不必要的运行时损耗
 
@@ -411,25 +411,25 @@ func interfaceBasics() {
 
 	// 1.1.5. 接口类型变量
 	// 接口类型变量能够存储所有实现了该接口的实例
-	//interfaceTypeVariable()
+	// interfaceTypeVariable()
 
 	// 1.1.6. 值接收者实现接口
 	// 使用值接收者实现接口之后，不管是struct还是*struct类型的变量都可以赋值给该接口变量。因为Go语言中有对指针类型变量求值的语法糖，dog指针fugui内部会自动求值*fugui
-	//var x1 Mover
-	//var wangcai1 = fish{} // 旺财是fish类型
-	//x1 = wangcai1         // x可以接收fish类型
-	//var fugui1 = &fish{}  // 富贵是*fish类型
-	//x1 = fugui1           // x可以接收*fish类型
-	//x1.move()
+	// var x1 Mover
+	// var wangcai1 = fish{} // 旺财是fish类型
+	// x1 = wangcai1         // x可以接收fish类型
+	// var fugui1 = &fish{}  // 富贵是*fish类型
+	// x1 = fugui1           // x可以接收*fish类型
+	// x1.move()
 
 	// 1.1.7. 指针接收者实现接口
 	// 使用值接收者实现接口时，只能将*struct类型的变量赋值给该接口变量，传struct类型给接口变量编译不通过
-	//var x2 Mover
-	//var wangcai2 = fish{} // 旺财是fish类型
-	//x2 = wangcai2         // 当实现Mover接口的是*fish类型时，   x不可以接收fish类型
-	//var fugui2 = &fish{}  // 富贵是*fish类型
-	//x2 = fugui2           // x可以接收*fish类型
-	//x2.move()
+	// var x2 Mover
+	// var wangcai2 = fish{} // 旺财是fish类型
+	// x2 = wangcai2         // 当实现Mover接口的是*fish类型时，   x不可以接收fish类型
+	// var fugui2 = &fish{}  // 富贵是*fish类型
+	// x2 = fugui2           // x可以接收*fish类型
+	// x2.move()
 
 	// 1.1.8. 值接收者和指针接收者实现接口的区别
 	// 实现接口的是struct类型时，接口类型变量可以接收struct类型、*struct类型(语法糖)
@@ -441,9 +441,9 @@ func interfaceBasics() {
 	// 1.2.2. 多个类型实现同一接口。例如狗可以动，汽车也可以动
 	// 一个接口的方法，不一定需要由一个类型完全实现
 	// 接口的方法可以通过在类型中嵌入其他类型或者结构体来实现，当前类型可以调用被嵌入类型的方法
-	//h := haier{}
-	//h.wash()
-	//h.dry()
+	// h := haier{}
+	// h.wash()
+	// h.dry()
 
 	// 1.2.3. 接口嵌套
 
@@ -452,27 +452,27 @@ func interfaceBasics() {
 	// 空接口是指没有定义任何方法的接口。因此任何类型都实现了空接口
 	// 空接口类型的变量可以存储任意类型的变量
 	// 定义一个空接口x
-	//var x interface{}
-	//s := "pprof.cn"
-	//x = s
-	//fmt.Printf("type:%T value:%v\n", x, x)
-	//i := 100
-	//x = i
-	//fmt.Printf("type:%T value:%v\n", x, x)
-	//b := true
-	//x = b
-	//fmt.Printf("type:%T value:%v\n", x, x)
+	// var x interface{}
+	// s := "pprof.cn"
+	// x = s
+	// fmt.Printf("type:%T value:%v\n", x, x)
+	// i := 100
+	// x = i
+	// fmt.Printf("type:%T value:%v\n", x, x)
+	// b := true
+	// x = b
+	// fmt.Printf("type:%T value:%v\n", x, x)
 
 	// 1.3.2. 空接口的应用
 	// a. 空接口作为函数的参数，可以接收任意类型的函数参数
-	//funcWithEmptyInterfaceAsParams(1)
+	// funcWithEmptyInterfaceAsParams(1)
 
 	// b. 空接口作为map的值，可以保存任意值的字典
-	//var studentInfo = make(map[string]interface{})
-	//studentInfo["name"] = "李白"
-	//studentInfo["age"] = 18
-	//studentInfo["married"] = false
-	//fmt.Println(studentInfo)
+	// var studentInfo = make(map[string]interface{})
+	// studentInfo["name"] = "李白"
+	// studentInfo["age"] = 18
+	// studentInfo["married"] = false
+	// fmt.Println(studentInfo)
 
 	// 1.3.3. 类型断言
 	// 一个接口的值（简称接口值）是由一个具体类型和具体类型的值两部分组成的。这两部分分别称为接口的动态类型和动态值
@@ -498,10 +498,10 @@ func interfaceBasics() {
 }
 
 func main() {
-	//structBasics()
-	//jsonSerializer()
-	//structTag()
-	//valueAndExpression()
+	// structBasics()
+	// jsonSerializer()
+	// structTag()
+	// valueAndExpression()
 	interfaceBasics()
 
 }
