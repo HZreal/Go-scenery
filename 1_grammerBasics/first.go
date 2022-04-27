@@ -11,6 +11,26 @@ import (
 	"time"
 )
 
+// 基本数据类型
+func dataType() {
+	//  int8  uint8类型大小为 1 字节，  表示十进制数-128 ~ 127, 0 ~ 255，         byte是uint8 的别名
+	// int16 uint16类型大小为 2 字节，  表示十进制数-32768 ~ 32767, 0 ~ 65535，
+	// int32 uint32类型大小为 4 字节，  表示十进制数-21亿 ~ 21亿, 0 ~ 42亿，       rune是int32 的别名
+	// int64 uint64类型大小为 8 字节，  表示十进制数 ...
+	// int类型的大小是和操作系统位数相关的，如果是32位操作系统，int 类型的大小就是4字节。如果是64位操作系统，int 类型的大小就是8个字节
+
+	// 1.1.1. 整型
+	// 整型分为以下两个大类：
+	// 按长度分为：int8、int16、int32、int64    对应的无符号整型：uint8、uint16、uint32、uint64
+	// 其中，uint8就是我们熟知的byte型，int16对应C语言中的short型，int64对应C语言中的long型。
+
+	// 1.1.2. 浮点型
+	// Go语言支持两种浮点型数：float32和float64。这两种浮点型数据格式遵循IEEE 754标准：
+	// float32 的浮点数的最大范围约为3.4e38，可以使用常量定义：math.MaxFloat32。
+	// float64 的浮点数的最大范围约为 1.8e308，可以使用一个常量定义：math.MaxFloat64。
+
+}
+
 // 定义变量
 func defineVariable() {
 	var username = "huang"

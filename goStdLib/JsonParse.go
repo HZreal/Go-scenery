@@ -53,27 +53,30 @@ func JsonUnmarshall() {
 	_ = json.Unmarshal(byteArr, &p)
 	v, ok := p.(map[string]interface{}) // 断言p为类型map[string]interface{}  返回：v为断言成功的对应类型值，ok表示是否断言成功
 	if ok {
-		fmt.Println("断言成功", v) // 断言成功，输出值
+		fmt.Println("断言成功的数据为", v) // 断言成功，输出值
 	} else {
 		fmt.Println("断言失败")
 	}
 	// 另一种处理
 	m := p.(map[string]interface{})
-	fmt.Println(m)
-	for k, v := range m {
-		switch vv := v.(type) {
+	fmt.Println("断言成功的数据-----", m)
+	for _, v := range m {
+		switch v.(type) { // 继续断言value的类型
 		case string:
-			fmt.Printf("%s is string, value: %s\n", k, vv)
+			fmt.Println("\ntype is string, value is ", v.(string))
 		case int:
-			fmt.Printf("%s is int, value: %d\n", k, vv)
+			fmt.Println("\ntype is int, value is ", v.(int))
 		case int64:
-			fmt.Printf("%s is int64, value: %d\n", k, vv)
+			fmt.Println("\ntype is int64, value is ", v.(int64))
 		case float64:
-			fmt.Printf("%s is float64, value: %f\n", k, vv)
+			fmt.Println("\ntype is float64, value is ", v.(float64))
 		case bool:
-			fmt.Printf("%s is bool, vaule: %v", k, vv)
+			fmt.Println("\ntype is bool, value is ", v.(bool))
+		case []byte:
+			fmt.Println("\ntype is bool, value is ", v.([]byte))
+			fmt.Println("[]byte to string ---", string(v.([]byte)))
 		default:
-			fmt.Printf("%s is unknow type\n", k)
+			fmt.Printf("\ntype is unknow, print it as %v", v)
 		}
 	}
 

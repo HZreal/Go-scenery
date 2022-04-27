@@ -8,7 +8,7 @@ import (
 	"net"
 )
 
-//TCP服务端程序的处理流程：
+// TCP服务端程序的处理流程：
 //		1.监听端口
 //		2.接收客户端请求建立链接
 //		3.创建goroutine处理链接。
@@ -91,6 +91,6 @@ func server2() {
 	}
 }
 func main() {
-	//server1()
+	// server1()
 	server2()
 }

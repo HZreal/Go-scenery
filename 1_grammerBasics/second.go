@@ -404,6 +404,7 @@ func testChannelClose2() {
 // 发送数据给out通道
 func counter(out chan<- int) { // 参数类型 chan<- int 表示变量out为一个单向发通道，对于此函数来说就是'发出去'
 	for i := 0; i < 20; i++ {
+		fmt.Println(i, "----- counterFunc time is ----- ", time.Now())
 		out <- i
 	}
 	close(out)
@@ -412,6 +413,7 @@ func counter(out chan<- int) { // 参数类型 chan<- int 表示变量out为一�
 // 从in通道接收数据，并发送数据给out通道
 func squarer(out chan<- int, in <-chan int) { // 变量out为一个单向发通道'发出去'， 变量in为一个单向收通道'收进来'
 	for i := range in {
+		fmt.Println(i, "----- squarerFunc time is ----- ", time.Now())
 		out <- i * i
 	}
 	close(out)
@@ -419,8 +421,9 @@ func squarer(out chan<- int, in <-chan int) { // 变量out为一个单向发通�
 
 // 从in通道接收数据
 func printer(in <-chan int) { // 参数类型 <-chan int 表示变量in为一个单向收通道，对于此函数来说就是'收进来'
-	for i := range in {
-		fmt.Println(i)
+	fmt.Println(time.Now())
+	for i := range in { // 通道in里没有数据时会阻塞，所以整体上对每个i，还是以 counter -> squarer -> printer 顺序执行
+		fmt.Println(i, "----- printerFunc time is ----- ", time.Now())
 	}
 }
 
@@ -518,7 +521,7 @@ func main() {
 	// pointBasics()
 	// mapBasics()
 	// pointArr()
-	// channelBasics()
+	channelBasics()
 
 }
 

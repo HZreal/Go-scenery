@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-//一个TCP客户端进行TCP通信的流程如下：
+// 一个TCP客户端进行TCP通信的流程如下：
 //		1.建立与服务端的链接
 //		2.进行数据收发
 //		3.关闭链接
@@ -33,6 +33,8 @@ func client1() {
 		if err != nil {
 			return
 		}
+
+		// 读取返回结果
 		buf := [512]byte{}
 		n, err := conn.Read(buf[:])
 		if err != nil {

@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"math/rand"
 	"runtime"
+	"strconv"
 	"sync"
+	"sync/atomic"
 	"time"
 )
 
@@ -38,7 +40,6 @@ func run1() {
 
 var wg sync.WaitGroup // 实现goroutine的同步
 func hello2(i int) {
-
 	defer wg.Done()
 	fmt.Println("Hello Goroutine!", i)
 }
@@ -46,14 +47,15 @@ func hello2(i int) {
 // 启动多个goroutine
 func run2() {
 	for i := 0; i < 10; i++ {
-		wg.Add(1) // 启动一个goroutine就登记+1
+		wg.Add(1) // 启动一个goroutine，同步计数器的计数量+1
 		go hello2(i)
 	}
-	wg.Wait() // 等待所有登记的goroutine都结束
+	wg.Wait() // 阻塞此主协程，等待所有登记的子goroutine结束后再继续执行
+	fmt.Println("直到同步计数器计数量为0时才执行")
 }
 
 // 测试协程，主协程退出了，其他任务也退出
-func testCoroutine() {
+func testGoRoutine() {
 	// 合起来写
 	go func() {
 		i := 0
@@ -135,7 +137,6 @@ func a() {
 		fmt.Println("A:", i)
 	}
 }
-
 func b() {
 	for i := 1; i < 10; i++ {
 		fmt.Println("B:", i)
@@ -167,7 +168,7 @@ type Result struct {
 // 自定义创建goroutine池函数
 func createGoroutinePool(num int, jobChan chan *Job, resultChan chan *Result) {
 	for i := 0; i < num; i++ {
-		go func(jobChan chan *Job, resultChan chan *Result) { // 每个创建的协程从jobChan中取数据，进行计算后，放入resultChan
+		go func(jobChan chan *Job, resultChan chan *Result) { // 每个协程任务相同，都是从jobChan中取数据，进行计算后，放入resultChan
 			for job := range jobChan {
 				// 取jobChan中的随机数
 				randNum := job.RandNum
@@ -208,7 +209,7 @@ func goRoutinePoolDemo() {
 
 	// 开个打印结果的协程
 	go func() {
-		for res := range resultChan {
+		for res := range resultChan { // 阻塞，直到resultChan有值
 			fmt.Println("jobID-----", res.job.Id, "\trandNum-----", res.job.RandNum, "\tSum-----", res.Sum)
 		}
 	}()
@@ -307,7 +308,7 @@ func selectMultiplexing() {
 	ch2 := make(chan string, 5)
 
 	// 创建协程函数
-	routine := func(ch chan string, data string, sep time.Duration) {
+	routine := func(ch chan<- string, data string, sep time.Duration) {
 		fmt.Println("params------", data, sep)
 		time.Sleep(sep)
 		ch <- data
@@ -317,23 +318,55 @@ func selectMultiplexing() {
 	go routine(ch2, "data2", 1*time.Second)
 
 	// 用select监控，ch1/ch2哪个通道先取到数据就执行对应的case
+	var counter int // 用于确定s1，s2两个数据是否都取到
+	var s1 string
+	var s2 string
 	for {
 		select {
-		case s1 := <-ch1:
-			fmt.Println("s1=", s1)
-		case s2 := <-ch2:
-			fmt.Println("s2=", s2)
+		case s1 = <-ch1: // 从ch1取值
+			counter++
+		case s2 = <-ch2: // 从ch2取值
+			counter++
+		}
+		if counter == 2 {
+			break
 		}
 	}
+	fmt.Println(s1, s2)
 
 }
 
+// 数据竞态
 func testDataRace() {
 	var x int64
 	var wg sync.WaitGroup
+
 	add := func() {
 		for i := 0; i < 5000; i++ {
 			x = x + 1
+		}
+		wg.Done()
+	}
+
+	wg.Add(2)
+	go add()
+	go add()
+	wg.Wait() // 等待两个add协程执行完毕才继续执行
+	fmt.Println(x)
+}
+
+// 互斥锁
+func useMutex() {
+
+	var x int64
+	var wg sync.WaitGroup
+	var mutex sync.Mutex
+
+	add := func() {
+		for i := 0; i < 5000; i++ {
+			mutex.Lock() // 加锁
+			x = x + 1
+			mutex.Unlock() // 解锁
 		}
 		wg.Done()
 	}
@@ -343,54 +376,34 @@ func testDataRace() {
 	wg.Wait()
 	fmt.Println(x)
 }
-func useMutex() {
-	// sync.WaitGroup也是一个经常会用到的同步方法，它的使用场景是在一个goroutine等待一组goroutine执行完成
-	// sync.WaitGroup拥有一个内部计数器。当计数器等于0时，则Wait()方法会立即返回。否则它将阻塞执行Wait()方法的goroutine，直到计数器等于0时为止。
 
-	var x int64
-	var wg sync.WaitGroup
-	var lock sync.Mutex
-
-	add := func() {
-		for i := 0; i < 5000; i++ {
-			lock.Lock() // 加锁
-			x = x + 1
-			lock.Unlock() // 解锁
-		}
-		wg.Done() // 减少计数器，将计数器减1，Done()方法底层就是通过Add(-1)实现的
-	}
-	wg.Add(2) // 增加计数器，将计数器加2，因为开了两个协程，每个协程为一个计数量
-	go add()
-	go add()
-	wg.Wait() // 阻塞当前调用wait()的goroutine，直到计数器等于0时为止，否则当前goroutine结束了，其子goroutine也被杀死
-	fmt.Println(x)
-}
+// 读写互斥锁
 func useRWMutex() {
 	var (
 		x  int64
 		wg sync.WaitGroup
 		// lock   sync.Mutex
-		rwlock sync.RWMutex
+		rwMutex sync.RWMutex
 	)
 	write := func() {
-		// lock.Lock()                                // 加互斥锁
-		rwlock.Lock() // 加写锁
+		// lock.Lock()                                 // 加互斥锁
+		rwMutex.Lock() // 加写锁
 		x = x + 1
 		time.Sleep(10 * time.Millisecond) // 假设写操作耗时10毫秒
-		rwlock.Unlock()                   // 解写锁
+		rwMutex.Unlock()                  // 解写锁
 		// lock.Unlock()                              // 解互斥锁
 		wg.Done()
 	}
 	read := func() {
 		// lock.Lock()                                // 加互斥锁
-		rwlock.RLock()               // 加读锁
+		rwMutex.RLock()              // 加读锁
 		time.Sleep(time.Millisecond) // 假设读操作耗时1毫秒
-		rwlock.RUnlock()             // 解读锁
+		rwMutex.RUnlock()            // 解读锁
 		// lock.Unlock()                              // 解互斥锁
 		wg.Done()
 	}
 
-	start := time.Now()
+	startTime := time.Now()
 	for i := 0; i < 10; i++ {
 		wg.Add(1)
 		go write()
@@ -402,21 +415,59 @@ func useRWMutex() {
 	}
 
 	wg.Wait()
-	end := time.Now()
-	fmt.Println(end.Sub(start))
+	endTime := time.Now()
+	fmt.Println("endTime - startTime = ", endTime.Sub(startTime))
+
+}
+
+// 比较互斥锁和原子操作的性能
+func compareMutexWithAtomic() {
+	var x int64
+	var wg sync.WaitGroup
+	// var m sync.Mutex
+
+	// 普通版加函数
+	// add := func() {
+	// 	x++
+	// 	wg.Done()
+	// }
+	// 互斥锁版加函数
+	// mutexAdd := func() {
+	// 	m.Lock()
+	// 	x++
+	// 	m.Unlock()
+	// 	wg.Done()
+	// }
+	// 原子操作版加函数
+	atomicAdd := func() {
+		atomic.AddInt64(&x, 1)
+		wg.Done()
+	}
+
+	startTime := time.Now()
+	for i := 0; i < 10000; i++ {
+		wg.Add(1)
+		// go add()              // 普通的add函数 不是并发安全的，结果非预期，具有不确定性
+		// go mutexAdd()         // 加互斥锁的add函数 是并发安全的，但是加锁性能开销大
+		go atomicAdd() // 加原子操作的add函数 是并发安全，性能优于互斥锁
+	}
+	wg.Wait()
+	endTime := time.Now()
+	fmt.Println(x)
+	fmt.Println(endTime.Sub(startTime))
 
 }
 
 // 并发安全和锁问题
 func concurrentSecurityAndLock() {
 	// 有时候会存在多个goroutine同时操作一个资源（临界区），这种情况会发生竞态问题，举个例子：
-	// testDataRace()        // 开启了两个goroutine去累加变量x的值，这两个goroutine在访问和修改x变量的时候就会存在数据竞争，导致结果与期待的10000不符
+	// testDataRace()                 // 开启了两个goroutine去累加变量x的值，这两个goroutine在访问和修改x变量的时候就会存在数据竞争，导致结果与期待的10000不符
 
 	// 1.1.1. 互斥锁
 	// 互斥锁是一种常用的控制共享资源访问的方法，它能够保证同时只有一个goroutine可以访问共享资源。Go语言中使用sync包的Mutex类型来实现互斥锁。
 	// 使用互斥锁能够保证同一时间有且只有一个goroutine进入临界区，其他的goroutine则在等待锁；当互斥锁释放后，等待的goroutine才可以获取锁进入临界区，多个goroutine同时等待一个锁时，唤醒的策略是随机的
 	// 使用互斥锁来修复上面testDataRace()代码的问题：
-	useMutex()
+	// useMutex()
 
 	// 1.1.2. 读写互斥锁
 	// 互斥锁是完全互斥的，但是有很多实际的场景下是读多写少的，当我们并发的去读取一个资源不涉及资源修改的时候是没有必要加锁的，这种场景下使用读写锁是更好的一种选择
@@ -426,23 +477,177 @@ func concurrentSecurityAndLock() {
 	// 		当一个goroutine获取写锁之后，其他的goroutine无论是获取读锁还是写锁都会等待
 	// useRWMutex()
 
+	// 原子操作
+	// 加锁操作因为涉及内核态的上下文切换会比较耗时、代价比较高
+	// 可以使用原子操作来保证并发安全，它在用户态就可以完成，因此性能比加锁操作更好
+	compareMutexWithAtomic()
+
 }
 
+// 使用 Sync.WaitGroup
+func useSyncWaitGroup() {
+
+	// sync.WaitGroup也是一个经常会用到的同步方法，它的使用场景是在一个goroutine等待一组goroutine执行完成
+	// sync.WaitGroup拥有一个内部计数器。当计数器等于0时，则Wait()方法会立即返回。否则它将阻塞执行Wait()方法的goroutine，直到计数器等于0时为止。
+
+	var wg sync.WaitGroup
+	wg.Add(1) // 增加计数器，将计数器加2，因为开了两个add协程，每个协程为一个计数量
+	go func() {
+		fmt.Println("goroutine is executing ...")
+		wg.Done() // 减少计数器，此add方法执行完成，将计数器减1，Done()方法底层就是通过Add(-1)实现的
+	}()
+	fmt.Println("main goroutine wait until sync Counter become zero ...")
+	wg.Wait() // 阻塞当前调用wait()的goroutine，直到计数器等于0时为止，否则当前goroutine结束了，其子goroutine也被杀死
+	fmt.Println("main goroutine done!")
+}
+
+// 并发安全问题
+func testConcurrentSecurity() {
+	var once sync.Once
+	var _map map[string]interface{}
+
+	// 初始化操作函数
+	initOperationFunc := func() {
+		_map = map[string]interface{}{
+			"left":  "left111",
+			"up":    123,
+			"right": "right222",
+			"down":  447,
+		}
+	}
+
+	// concurrenceFunc异步函数   被多个 goroutine 调用时不是并发安全的
+	concurrenceFunc := func() {
+		if _map == nil {
+			// initOperationFunc()       // 实际操作数据之前先判断数据是否已初始化，没有则进行初始化操作
+
+			// sync.Once解决testConcurrentSecurity函数遇到的并发安全问题
+			once.Do(initOperationFunc)
+		}
+
+		// 操作_map数据
+		fmt.Println("--------- operate initialized data ---------")
+		for k, v := range _map {
+			fmt.Println(k, v)
+		}
+	}
+
+	// 多个concurrenceFunc异步执行
+	for i := 0; i < 5; i++ {
+		go concurrenceFunc() // 多个goroutine并发调用concurrenceFunc函数时不是并发安全的，现代的编译器和CPU可能会在保证每个goroutine都满足串行一致的基础上自由地重排访问内存的顺序
+		// 有可能出现：某个goroutine执行初始化操作执行到一半，_map非nil但未初始化完成，而此时另一个goroutine判断_map非空继续往下执行，拿着非空但未初始化完整的_map进行后续操作，这就出现了并发安全问题。
+		// 考虑到这种情况，我们能想到的办法就是添加互斥锁，保证初始化_map的时候不会被其他的goroutine操作，但是这样做又会引发性能问题，于是sync.Once.Do(initOperationFunc)来解决
+	}
+
+	for {
+
+	}
+}
+
+// 测试go内置的map不是并发安全的
+func testBuiltinMap() {
+	wg := sync.WaitGroup{}
+
+	var m = make(map[string]int)
+	get := func(key string) int {
+		return m[key]
+	}
+	set := func(key string, value int) {
+		m[key] = value
+	}
+
+	func(num int) { // num表示开启的goroutine数，开启少量没有问题，开启大量则报错 fatal error: concurrent map writes
+		for i := 0; i < num; i++ {
+			wg.Add(1)
+			go func(n int) {
+				key := strconv.Itoa(n) // 将整型转为整型的字符串： 1 -> '1'
+				set(key, n)
+				fmt.Printf("k=:%v,v:=%v\n", key, get(key))
+				wg.Done()
+			}(i)
+		}
+		wg.Wait()
+	}(2)
+
+}
+
+// 使用 sync.Map
+func useSyncMap() {
+	wg := sync.WaitGroup{}
+	var syncMap = sync.Map{}
+
+	func(num int) {
+		for i := 0; i < num; i++ {
+			wg.Add(1)
+			go func(n int) {
+				key := strconv.Itoa(n)
+				syncMap.Store(key, n)         // 相当于根据key设置value
+				value, _ := syncMap.Load(key) // 相当于根据key获取value
+				fmt.Printf("k=:%v,v:=%v\n", key, value)
+				wg.Done()
+			}(i)
+		}
+		wg.Wait()
+	}(20)
+
+}
+
+// 并发中的同步
+func syncInConcurrence() {
+	// 1.1.1. sync.WaitGroup
+	// 使用sync.WaitGroup来实现并发任务的同步
+	// sync.WaitGroup内部维护着一个计数器，计数器的值可以增加和减少。
+	// 例如当我们启动了N 个并发任务时，就将计数器值增加N。每个任务完成时通过调用Done()方法将计数器减1。通过调用Wait()来等待并发任务执行完，当计数器值为0时，表示所有并发任务已经完成。
+	// var wg sync.WaitGroup        // 注意sync.WaitGroup是一个结构体，传递的时候要传递指针
+	// wg.Add(2)                    // 计数器+delta
+	// wg.Done()                    // 计数器-1
+	// wg.Wait()                    // 阻塞当前调用wait的协程，直到计数器变为0才继续执行
+	// useSyncWaitGroup()
+
+	// 1.1.2. sync.Once
+	// 在编程的很多场景下我们需要确保某些操作在高并发的场景下只执行一次，例如只加载一次配置文件、只关闭一次通道等
+	// sync包中提供了一个针对只执行一次场景的解决方案 – sync.Once
+	// sync.Once 内部包含一个互斥锁和一个布尔值，互斥锁保证布尔值和数据的安全，而布尔值用来记录初始化是否完成。这样设计就能保证初始化操作的时候是并发安全的并且初始化操作也不会被执行多次
+	// sync.Once只有一个Do方法，声明如下
+	// func (o *Once) Do(f func()) {}          注意：如果要执行的函数f需要传递参数就需要搭配闭包来使用
+	// var once sync.Once
+	// once.Do(func() {})
+
+	// 加载配置文件示例
+	// 对于一个开销很大的初始化操作，一开始不执行初始化，而是延迟执行(真正用到它的时候再执行)，这是比较合理的，原因是预先初始化一个变量（比如在init函数中完成初始化）会增加程序的启动耗时，还有可能实际执行过程中这个变量没有用上，那么这个初始化操作就不是必须要做的，例如：
+	// testConcurrentSecurity()      // 注释once.Do(initOperationFunc)
+
+	// 使用sync.Once 解决上述testConcurrentSecurity函数遇到的并发安全问题
+	// testConcurrentSecurity()      // 使用once.Do(initOperationFunc)
+
+	// 1.1.3. sync.Map
+	// Go语言中内置的map不是并发安全的
+	// testBuiltinMap()
+
+	// 上述testBuiltinMap场景下，就需要为内置map加锁来保证并发的安全性了
+	// Go语言的sync包中提供了一个开箱即用的并发安全版map–sync.Map。开箱即用表示不用像内置的map一样使用make函数初始化就能直接使用。同时sync.Map内置了诸如Store、Load、LoadOrStore、Delete、Range等操作方法
+	useSyncMap()
+
+}
 func main() {
 	// run1()
 	// run2()
 
-	// testCoroutine()
+	// testGoRoutine()
 
 	// testGosched()
 	// testGoexit()
-
 	// testGOMAXPROCS(1)        // 两个任务只有一个逻辑核心，此时是做完一个任务再做另一个任务。
 	// testGOMAXPROCS(2)        // 将逻辑核心数设为2，此时两个任务并行执行
 
 	// goRoutinePoolDemo()
+
 	// timerAndTickerBasics()
-	selectMultiplexing()
-	// concurrentSecurityAndLock()
+
+	// selectMultiplexing()
+
+	concurrentSecurityAndLock()
+
+	// syncInConcurrence()
 
 }
