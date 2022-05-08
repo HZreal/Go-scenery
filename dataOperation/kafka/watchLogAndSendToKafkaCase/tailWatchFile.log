@@ -1,0 +1,13 @@
+# 此日志文件被tail监听，只要有追加均被检测到
+
+log1 -------- hello
+log2 -------- hello append
+
+nihao
+
+append data
+hello
+1111
+qqqqq
+
+jjjj

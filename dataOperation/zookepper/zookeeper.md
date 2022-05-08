@@ -74,13 +74,14 @@ ZooKeeper还配合了监听器，常见的监听场景有以下两项：
 * 安装目录：/usr/local/Cellar/zookeeper/3.7.0_1    
   ./bin/目录包含zkServer、zkCli等可执行文件
 * 默认配置文件: /usr/local/etc/zookeeper/zoo.cfg
-* 启动server:   zkServer start 
+* 启动server:   zkServer start
   * zkServer start zk.cfg   指定配置文件启动
   * zkServer stop/status
 * 启动zk客户端进行连接:     
   * zkCli -server 127.0.0.1:2181
   * zkCli -server 127.0.0.1:21811 127.0.0.1:21812 127.0.0.1:21813 127.0.0.1:21814
 
+* 客户端连接默认端口2181、leader选举端口3888、集群节点通讯数据同步端口2888
 
 ### 2.配置环境变量:
 

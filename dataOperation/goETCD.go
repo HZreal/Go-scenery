@@ -226,7 +226,7 @@ func demoDistributedLockBasedOnETCD() {
 }
 
 func main() {
-	// etcdOperation()
+	etcdOperation()
 	// useWatch()
 	// useLease()
 	// keepAlive()

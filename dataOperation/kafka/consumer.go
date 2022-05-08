@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/Shopify/sarama"
+	"github.com/Shopify/sarama" // doc:  https://pkg.go.dev/github.com/Shopify/sarama
 )
 
 // kafka consumer
@@ -18,7 +18,8 @@ func main() {
 		fmt.Printf("fail to get list of partition:err%v\n", err)
 		return
 	}
-	fmt.Println(partitionList)
+	fmt.Println("all partition IDs -----------", partitionList)
+
 	for partition := range partitionList { // 遍历所有的分区
 		// 针对每个分区创建一个对应的分区消费者
 		pc, err := consumer.ConsumePartition("web_log", int32(partition), sarama.OffsetNewest)
@@ -29,9 +30,13 @@ func main() {
 		defer pc.AsyncClose()
 		// 异步从每个分区消费信息
 		go func(sarama.PartitionConsumer) {
-			for msg := range pc.Messages() {
-				fmt.Printf("Partition:%d Offset:%d Key:%v Value:%v", msg.Partition, msg.Offset, msg.Key, msg.Value)
+			for msg := range pc.Messages() { // pc.Messages()返回 <-chan *ConsumerMessage
+				fmt.Printf("Topic:%s Partition:%d Offset:%d Key:%v Value:%v", msg.Topic, msg.Partition, msg.Offset, msg.Key, msg.Value) // key、value均是[]byte
 			}
 		}(pc)
 	}
+
+	// keep main-thread alive, or the goroutine will be dead with the main-thread's terminal
+	a := make(chan bool, 1)
+	<-a
 }
