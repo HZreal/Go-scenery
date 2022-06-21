@@ -239,6 +239,15 @@ func returnTwoClosure(base int) (func(i int) int, func(j int) int) {
 	return add, sub
 }
 
+// 一般闭包?
+func commomClosure(i int) func(args ...interface{}) int {
+	inner := func(args ...interface{}) int {
+		fmt.Println(args)
+		return i + 1
+	}
+	return inner
+}
+
 // 闭包
 func closureBasics() {
 	// 闭包是由函数及其相关引用环境组合而成的实体(即：闭包=函数+引用环境)
@@ -262,6 +271,10 @@ func closureBasics() {
 	println(rtc1(10), rtc2(25))        // base值变化：  100 -> 150 -> 160 -> 135
 	// 此时base=135
 	println(rtc1(15), rtc2(12)) // base值变化：  135 -> 150 -> 138
+
+	//
+	// inner := commomClosure(2)
+	// inner()
 
 }
 
@@ -757,7 +770,7 @@ func main() {
 	// funcCalled()
 	// dataTypeConvert()
 
-	// closureBasics()
+	closureBasics()
 	// recursiveFuncBasic()
 
 	// deferBasics()

@@ -8,3 +8,12 @@
 
 
 聊天室demo运行   go run server.go hub.go data.go connection.go  之后执行local.html文件
+
+
+
+
+gorush：Go 编写的通知推送服务器      https://github.com/appleboy/gorush
+gotify：基于 WebSocket 进行实时消息收发的简单服务器      https://github.com/gotify/server
+
+
+

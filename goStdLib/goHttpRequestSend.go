@@ -14,17 +14,17 @@ import (
 
 var uri = "http://127.0.0.1:8000/api/parseRawBody"
 
-//获取键值对的body
+// 获取键值对的body
 func getUrlValues() url.Values {
-	//方式1
+	// 方式1
 	data1 := url.Values{"filename": {"TiMi"}, "id": {"123"}}
 	fmt.Println("data1--------\n", data1)
-	//方式2
+	// 方式2
 	data2 := url.Values{}
 	data2.Set("name", "TiMi")
 	data2.Set("id", "123")
 	fmt.Println("data2--------\n", data2)
-	//方式3
+	// 方式3
 	data3 := make(url.Values)
 	data3["name"] = []string{"TiMi"}
 	data3["id"] = []string{"123"}
@@ -46,7 +46,7 @@ func sendFormData() {
 	if err != nil {
 		fmt.Println("err=", err)
 	}
-	//http返回的response的body必须close,否则就会有内存泄露
+	// http返回的response的body必须close,否则就会有内存泄露
 	defer func() {
 		res.Body.Close()
 		fmt.Println("res finish ------- ")
@@ -59,7 +59,7 @@ func sendFormData() {
 
 }
 
-//发送body为键值对的post请求   application/x-www-form-urlencoded
+// 发送body为键值对的post请求   application/x-www-form-urlencoded
 func sendFormDataWithUrlencoded() {
 	data := getUrlValues()
 
@@ -73,7 +73,7 @@ func sendFormDataWithUrlencoded() {
 	request, _ := http.NewRequest("POST", urlStr, strings.NewReader(data.Encode()))
 	request.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	// 等价于
-	//res, err := http.Post(uri, "application/x-www-form-urlencoded", strings.NewReader(data.Encode()))
+	// res, err := http.Post(uri, "application/x-www-form-urlencoded", strings.NewReader(data.Encode()))
 
 	client := &http.Client{}
 	res, err := client.Do(request) // 发送
@@ -81,13 +81,13 @@ func sendFormDataWithUrlencoded() {
 		fmt.Println(err.Error())
 		return
 	}
-	//http返回的response的body必须close,否则就会有内存泄露
+	// http返回的response的body必须close,否则就会有内存泄露
 	defer func() {
 		res.Body.Close()
 		fmt.Println("finish")
 	}()
 
-	//读取body
+	// 读取body
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		fmt.Println(" post err=", err)
@@ -127,29 +127,29 @@ func sendFormDataWithJson() {
 
 }
 
-//以二进制格式上传文件
+// 以二进制格式上传文件
 func sendFormDataWithFile() {
 	filePath := "/Users/hz/Desktop/hz/go/src/backend_master/asset/install.sh.zip"
 	filebyteArr, _ := ioutil.ReadFile(filePath)
 	fmt.Println("zip 文件  []byte   -----------\n", filebyteArr)
 	res, err := http.Post(uri, "multipart/form-data", bytes.NewReader(filebyteArr))
 
-	//bodyMap := make(map[string]string)
-	//bodyMap["file"] = string(filebyteArr)
-	//bodyMap["filename"] = "install.sh.zip"
-	//formDataByteArr, _ := json.Marshal(bodyMap)
-	//res, err := http.Post(uri, "multipart/form-data", bytes.NewReader(formDataByteArr))
+	// bodyMap := make(map[string]string)
+	// bodyMap["file"] = string(filebyteArr)
+	// bodyMap["filename"] = "install.sh.zip"
+	// formDataByteArr, _ := json.Marshal(bodyMap)
+	// res, err := http.Post(uri, "multipart/form-data", bytes.NewReader(formDataByteArr))
 
 	if err != nil {
 		fmt.Println("err=", err)
 	}
-	//http返回的response的body必须close,否则就会有内存泄露
+	// http返回的response的body必须close,否则就会有内存泄露
 	defer func() {
 		res.Body.Close()
 		fmt.Println("res finish -------------")
 	}()
 
-	//读取body
+	// 读取body
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		fmt.Println(" post err=", err)
@@ -167,12 +167,12 @@ func sendFormDataWithFile2() {
 	bodyMap["filename"] = "install.sh.zip"
 
 	dataVal := url.Values{}
-	//if bodyMap != nil {
+	// if bodyMap != nil {
 	//	for k, v := range bodyMap{
 	//		//dataVal.Set(k, datautils.ToString(v))
 	//		//dataVal.Set(k, v)
 	//	}
-	//}
+	// }
 	res, err := http.Post(uri, "multipart/form-data", strings.NewReader(dataVal.Encode()))
 	// 最后关闭res.Body文件
 	defer func(Body io.ReadCloser) {
@@ -193,9 +193,9 @@ func sendFormDataWithFile2() {
 
 }
 func main() {
-	//sendFormData()
-	//sendFormDataWithUrlencoded()
-	//sendFormDataWithJson()
+	// sendFormData()
+	// sendFormDataWithUrlencoded()
+	// sendFormDataWithJson()
 	sendFormDataWithFile()
-	//sendFormDataWithFile2()
+	// sendFormDataWithFile2()
 }

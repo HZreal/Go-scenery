@@ -45,13 +45,13 @@ func getServerHost() (host string, err error) {
 	defer conn.Close()
 	serverList, err := GetServerList(conn)
 	if err != nil {
-		fmt.Printf(" get server list error: %s \n", err)
+		fmt.Printf(" get wfsjs-demo list error: %s \n", err)
 		return
 	}
 
 	count := len(serverList)
 	if count == 0 {
-		err = errors.New("server list is empty \n")
+		err = errors.New("wfsjs-demo list is empty \n")
 		return
 	}
 
@@ -63,10 +63,10 @@ func getServerHost() (host string, err error) {
 
 // 根据此分布式系统选中的addr创建TCP客户端连接，并发送数据
 func startClient() {
-	// 1. 获取要请求的cluster node server addr
+	// 1. 获取要请求的cluster node wfsjs-demo addr
 	serverHost, err := getServerHost()
 	if err != nil {
-		fmt.Printf("get server host fail: %s \n", err)
+		fmt.Printf("get wfsjs-demo host fail: %s \n", err)
 		return
 	}
 	fmt.Println("connect host: " + serverHost)
