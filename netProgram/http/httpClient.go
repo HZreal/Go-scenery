@@ -7,8 +7,8 @@ import (
 )
 
 func main() {
-	//resp, _ := http.Get("http://www.baidu.com")
-	//fmt.Println(resp)
+	// resp, _ := http.Get("http://www.baidu.com")
+	// fmt.Println(resp)
 	resp, _ := http.Get("http://127.0.0.1:8000/go")
 	defer resp.Body.Close()
 	// 200 OK

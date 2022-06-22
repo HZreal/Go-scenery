@@ -3,7 +3,8 @@ package main
 import (
 	"errors"
 	"fmt"
-	"goBasics/fir_package"
+	"goBasics/fir_package" // 从 $GOPATH/src 或 $GOROOT/src 或者 $GOPATH/pkg/mod 目录下搜索包并导入
+	// "../fir_package"                 // Go Modules 不支持相对导入
 	"math"
 	"net/http"
 	"os"

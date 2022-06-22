@@ -3,6 +3,8 @@ package main
 import (
 	"errors"
 	"fmt"
+	"github.com/kardianos/osext"
+	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -14,6 +16,12 @@ func checkErr(err error) {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func getWd() {
+	path, err := os.Getwd()
+	checkErr(err)
+	fmt.Println(path)
 }
 
 // 获取当前的执行路径
@@ -43,17 +51,44 @@ func CurrentFile() {
 	if !ok {
 		panic(errors.New("Can not get current file info"))
 	}
-	fmt.Println(file)
+	fmt.Println("filePath ---->  ", file)
+	dir := filepath.Dir(file)
+	fmt.Println("dirPath ---->  ", dir)
+}
+
+func getExecutingFIlePath1() {
+	ex, err := os.Executable()
+	if err != nil {
+		panic(err)
+	}
+	// 可执行文件的路径
+	fmt.Println(ex)
+
+	//	获取执行文件所在目录
+	exPath := filepath.Dir(ex)
+	fmt.Println("可执行文件所在目录路径 :" + exPath)
+}
+
+func getExecutingFIlePath2() {
+	folderPath, err := osext.ExecutableFolder()
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("编译后二进制文件的执行目录 ----  ", folderPath)
 }
 
 func main() {
-	// fmt.Println(os.Getwd())
+	// getWd()
 
 	// getCurrentPath()
 	// getCurrentPath1()
-	// CurrentFile()
 
-	_, file, _, _ := runtime.Caller(1) // 在main函数中调用，返回执行时路径
-	fmt.Println(file)                  // 输出/Users/hz/Desktop/hz/go1.17.8/go1.17.8/src/runtime/proc.go
+	CurrentFile()
 
+	// _, file, _, _ := runtime.Caller(1) // 在main函数中调用，返回执行时路径
+	// fmt.Println(file)                  // 输出/Users/hz/Desktop/hz/goSDK/go1.17.11/src/runtime/proc.go
+
+	// getExecutingFIlePath1()
+
+	// getExecutingFIlePath2()
 }

@@ -13,7 +13,7 @@ import (
 //		2.接收客户端请求建立链接
 //		3.创建goroutine处理链接。
 
-func process(conn net.Conn) {
+func process1(conn net.Conn) {
 	defer conn.Close() // 关闭连接
 
 	for {
@@ -44,7 +44,7 @@ func server1() {
 			fmt.Println("accept failed, err:", err)
 			continue
 		}
-		go process(conn) // 启动一个goroutine处理连接
+		go process1(conn) // 启动一个goroutine处理连接
 	}
 }
 

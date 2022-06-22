@@ -1,6 +1,3 @@
-/**
- * wfs wfsjs-demo, Jeff Yang 2016.10
- */
 package main
 
 import "C"
@@ -41,6 +38,7 @@ var gHub *Hub
 var basePath string
 
 func indexHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("basePath ----  ", basePath)
 	http.ServeFile(w, r, basePath+"/index.html")
 }
 
@@ -78,7 +76,7 @@ func retrieveFileSize(filename string) int64 {
 }
 
 func (conn *Connection) appReadCommand2() {
-	//conn.ws.SetReadLimit(maxMessageSize)
+	// conn.ws.SetReadLimit(maxMessageSize)
 	for {
 		_, message, err := conn.ws.ReadMessage()
 		if err != nil {
@@ -119,7 +117,7 @@ func (conn *Connection) appMP4Streaming() {
 
 			if i < totalSize {
 				b, _, _ := retrieveFileData(conn.fileMP4DataName, offs, i)
-				//------------------------------------------
+				// ------------------------------------------
 				smallArray := make([]byte, offs)
 				copy(smallArray[:], b[0:offs])
 				err := conn.ws.WriteMessage(websocket.BinaryMessage, smallArray)
@@ -129,7 +127,7 @@ func (conn *Connection) appMP4Streaming() {
 					break
 				}
 				smallArray = nil
-				//-----------------------------------------
+				// -----------------------------------------
 				i += int64(offs)
 				j = totalSize - i
 				if j < int64(offs) {
@@ -203,7 +201,7 @@ func (conn *Connection) app264Streaming() {
 				off := int(offs)
 				b, _, _ := retrieveFileData(conn.file264DataName, off, fileStart)
 				sendFlag := true
-				//------------------------------------------
+				// ------------------------------------------
 				smallArray := make([]byte, off)
 				copy(smallArray[:], b[0:off])
 				if off < 100 {
@@ -221,7 +219,7 @@ func (conn *Connection) app264Streaming() {
 					}
 				}
 				smallArray = nil
-				//-----------------------------------------
+				// -----------------------------------------
 				fileStart += offs
 			}
 		}

@@ -193,10 +193,10 @@ func printEmployee(res *elastic.SearchResult, err error) {
 }
 
 func main() {
-	create()
-	delete()
-	update()
+	// create()
+	// delete()
+	// update()
 	gets()
-	query()
-	list(1, 3)
+	// query()
+	// list(1, 3)
 }

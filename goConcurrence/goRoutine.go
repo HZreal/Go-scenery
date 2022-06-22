@@ -35,7 +35,7 @@ func run1() {
 	// 程序启动时，main()函数作为主线程被创建------------------这里的线程严格的说指主goroutine，而非OS线程，下面亦然
 	go hello1() // 创建子线程、执行子线程，这个过程主线程将继续往下执行
 	fmt.Println("main goroutine done!")
-	time.Sleep(time.Second) // 若不稍等，主线程一结束，子线程跟着销毁
+	time.Sleep(time.Second) // 若不稍等，主线程一结束，创建的协程有可能未执行完跟着销毁
 }
 
 var wg sync.WaitGroup // 实现goroutine的同步
@@ -302,7 +302,7 @@ func timerAndTickerBasics() {
 func selectMultiplexing() {
 	// 某些场景下我们需要同时从多个通道接收数据。通道在接收数据时，如果没有数据可以接收将会发生阻塞
 
-	// select关键字，可以同时响应多个通道的操作，elect会一直等待，直到某个case的通信操作完成时，就会执行case分支对应的语句
+	// select关键字，可以同时响应多个通道的操作，select会一直等待，直到某个case的通信操作完成时，就会执行case分支对应的语句
 	// select可以同时监听一个或多个channel，直到其中一个channel ready
 	ch1 := make(chan string, 5)
 	ch2 := make(chan string, 5)
@@ -336,7 +336,7 @@ func selectMultiplexing() {
 
 }
 
-// 数据竞态
+// 数据竞态--------------多个goroutine同时操作一个资源（临界区）
 func testDataRace() {
 	var x int64
 	var wg sync.WaitGroup
@@ -355,7 +355,7 @@ func testDataRace() {
 	fmt.Println(x)
 }
 
-// 互斥锁
+// 互斥锁------------------------解决上述竞态问题
 func useMutex() {
 
 	var x int64
@@ -377,7 +377,7 @@ func useMutex() {
 	fmt.Println(x)
 }
 
-// 读写互斥锁
+// 读写互斥锁--------------------适合读多写少的场景
 func useRWMutex() {
 	var (
 		x  int64
@@ -391,15 +391,15 @@ func useRWMutex() {
 		x = x + 1
 		time.Sleep(10 * time.Millisecond) // 假设写操作耗时10毫秒
 		rwMutex.Unlock()                  // 解写锁
-		// lock.Unlock()                              // 解互斥锁
+		// lock.Unlock()                               // 解互斥锁
 		wg.Done()
 	}
 	read := func() {
-		// lock.Lock()                                // 加互斥锁
+		// lock.Lock()                                 // 加互斥锁
 		rwMutex.RLock()              // 加读锁
 		time.Sleep(time.Millisecond) // 假设读操作耗时1毫秒
 		rwMutex.RUnlock()            // 解读锁
-		// lock.Unlock()                              // 解互斥锁
+		// lock.Unlock()                               // 解互斥锁
 		wg.Done()
 	}
 
@@ -467,7 +467,7 @@ func concurrentSecurityAndLock() {
 	// 互斥锁是一种常用的控制共享资源访问的方法，它能够保证同时只有一个goroutine可以访问共享资源。Go语言中使用sync包的Mutex类型来实现互斥锁。
 	// 使用互斥锁能够保证同一时间有且只有一个goroutine进入临界区，其他的goroutine则在等待锁；当互斥锁释放后，等待的goroutine才可以获取锁进入临界区，多个goroutine同时等待一个锁时，唤醒的策略是随机的
 	// 使用互斥锁来修复上面testDataRace()代码的问题：
-	// useMutex()
+	useMutex()
 
 	// 1.1.2. 读写互斥锁
 	// 互斥锁是完全互斥的，但是有很多实际的场景下是读多写少的，当我们并发的去读取一个资源不涉及资源修改的时候是没有必要加锁的，这种场景下使用读写锁是更好的一种选择
@@ -480,11 +480,11 @@ func concurrentSecurityAndLock() {
 	// 原子操作
 	// 加锁操作因为涉及内核态的上下文切换会比较耗时、代价比较高
 	// 可以使用原子操作来保证并发安全，它在用户态就可以完成，因此性能比加锁操作更好
-	compareMutexWithAtomic()
+	// compareMutexWithAtomic()
 
 }
 
-// 使用 Sync.WaitGroup
+// 使用 Sync.WaitGroup 实现协程的同步
 func useSyncWaitGroup() {
 
 	// sync.WaitGroup也是一个经常会用到的同步方法，它的使用场景是在一个goroutine等待一组goroutine执行完成
@@ -571,7 +571,7 @@ func testBuiltinMap() {
 
 }
 
-// 使用 sync.Map
+// 大量并发操作map时，使用sync.Map代替内置map
 func useSyncMap() {
 	wg := sync.WaitGroup{}
 	var syncMap = sync.Map{}
@@ -602,7 +602,7 @@ func syncInConcurrence() {
 	// wg.Add(2)                    // 计数器+delta
 	// wg.Done()                    // 计数器-1
 	// wg.Wait()                    // 阻塞当前调用wait的协程，直到计数器变为0才继续执行
-	// useSyncWaitGroup()
+	useSyncWaitGroup()
 
 	// 1.1.2. sync.Once
 	// 在编程的很多场景下我们需要确保某些操作在高并发的场景下只执行一次，例如只加载一次配置文件、只关闭一次通道等
@@ -626,7 +626,7 @@ func syncInConcurrence() {
 
 	// 上述testBuiltinMap场景下，就需要为内置map加锁来保证并发的安全性了
 	// Go语言的sync包中提供了一个开箱即用的并发安全版map–sync.Map。开箱即用表示不用像内置的map一样使用make函数初始化就能直接使用。同时sync.Map内置了诸如Store、Load、LoadOrStore、Delete、Range等操作方法
-	useSyncMap()
+	// useSyncMap()
 
 }
 func main() {
@@ -635,10 +635,11 @@ func main() {
 
 	// testGoRoutine()
 
+	// runtime包的使用
 	// testGosched()
 	// testGoexit()
-	// testGOMAXPROCS(1)        // 两个任务只有一个逻辑核心，此时是做完一个任务再做另一个任务。
-	// testGOMAXPROCS(2)        // 将逻辑核心数设为2，此时两个任务并行执行
+	// testGOMAXPROCS(1)                     // 两个任务只有一个逻辑核心，此时是做完一个任务再做另一个任务。
+	// testGOMAXPROCS(2)                     // 将逻辑核心数设为2，此时两个任务并行执行
 
 	// goRoutinePoolDemo()
 

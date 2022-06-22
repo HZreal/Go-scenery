@@ -1,8 +1,6 @@
 // 声明当前所在包
 package main
 
-// 一个文件夹下的所有文件必须使用同一个包名
-
 import (
 	"fmt"
 	"math"
@@ -10,6 +8,14 @@ import (
 	"strings"
 	"time"
 )
+
+// 一个文件夹下的所有文件必须使用同一个包名
+
+// 导包顺序
+// 	先从项目根目录的 vendor 目录中查找
+// 	最后从 $GOROOT/src 目录下查找
+// 	然后从 $GOPATH/src 目录下查找
+// 	都找不到的话，就报错。
 
 // 基本数据类型
 func dataType() {

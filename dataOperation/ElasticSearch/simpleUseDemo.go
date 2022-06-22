@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
-	"github.com/olivere/elastic/v7"
+	"github.com/olivere/elastic"
 )
 
 type Person struct {
