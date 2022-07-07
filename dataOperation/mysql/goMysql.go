@@ -133,7 +133,7 @@ func connectMysqlWithSqlx() (db *sqlx.DB) {
 		fmt.Println("conn error :", err)
 	}
 
-	// db.SetMaxIdleConns(n1 int) 设置连接池中的保持连接(空闲连接)的最大连接数
+	// db.SetMaxIdleConns(n1 int) 设置连接池中的保持连接的最大连接数
 	// 默认是0，表示连接池不会保持数据库连接的状态：即当连接释放回到连接池的时候，连接将会被关闭。这会导致连接在连接池中频繁的关闭和创建，我们可以设置一个合理的值
 	db.SetMaxIdleConns(5)
 
@@ -147,7 +147,7 @@ func connectMysqlWithSqlx() (db *sqlx.DB) {
 	// db.SetConnMaxIdleTime(d time.Duration) 设置保持连接的最大时间，超过这个时间，自动断开本连接
 	db.SetConnMaxIdleTime(2 * time.Second)
 	// db.SetConnMaxLifetime(d time.Duration) 设置连接的最长使用有效时间，如果过期，连接将被拒绝
-	db.SetConnMaxLifetime(3 * time.Second)
+	db.SetConnMaxLifetime(5 * time.Second)
 
 	// 尝试连接，当调用了 Ping() 方法后，连接池一定会初始化一个数据库连接
 	err = db.Ping()
