@@ -8,4 +8,7 @@
 /httpRequests/
 .idea/
 .iml
+.xml
+.DS_Store/
+__pycache__
 
