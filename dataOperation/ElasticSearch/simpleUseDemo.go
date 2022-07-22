@@ -29,6 +29,14 @@ func demo() {
 	fmt.Printf("Indexed user %s to index %s, type %s\n", indexResponse.Id, indexResponse.Index, indexResponse.Type)
 
 }
+
+// "github.com/elastic/go-elasticsearch/v8"
+// func demo2() {
+// 	es, _ := elasticsearch.NewDefaultClient()
+// 	log.Println(elasticsearch.Version)
+// 	log.Println(es.Info())
+// }
+
 func main() {
 	demo()
 }
