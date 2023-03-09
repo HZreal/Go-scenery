@@ -82,7 +82,7 @@ func JsonUnmarshall() {
 
 }
 
-//struct实现Unmarshaler接口, 便可以实现解析JSON的过程
+// struct实现Unmarshaler接口, 便可以实现解析JSON的过程
 // UnmarshalJSON 自定义解析
 func (p *UserInfo) UnmarshalJSON(data []byte) error {
 	// 示例代码使用jsonitor代为解析

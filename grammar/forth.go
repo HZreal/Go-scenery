@@ -532,7 +532,6 @@ func errRaisedInDefer() {
 	panic("test panic")
 }
 
-//
 func mulDeferRecover() {
 	defer func() {
 		fmt.Println(recover()) // 有效
@@ -549,7 +548,6 @@ func mulDeferRecover() {
 	panic("test panic")
 }
 
-//
 func protectCodeSegmentWithAnonymousFunc(x, y int) {
 	var z int
 

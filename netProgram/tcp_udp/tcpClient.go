@@ -45,7 +45,6 @@ func client1() {
 	}
 }
 
-//
 func client2() {
 	conn, err := net.Dial("tcp", "127.0.0.1:30000")
 	if err != nil {

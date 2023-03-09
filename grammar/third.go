@@ -308,9 +308,9 @@ type Mover interface {
 }
 type fish struct{}
 
-// func (d fish) move() {
-//	fmt.Println("鱼会游")
-// }
+//	func (d fish) move() {
+//		fmt.Println("鱼会游")
+//	}
 func (d fish) move() {
 	fmt.Println("鱼会游")
 }
@@ -350,7 +350,6 @@ func funcWithEmptyInterfaceAsParams(a interface{}) {
 	fmt.Printf("type:%T value:%v\n", a, a)
 }
 
-//
 func justifyType(x interface{}) {
 	switch v := x.(type) {
 	case string:
@@ -480,7 +479,8 @@ func interfaceBasics() {
 	w = os.Stdout         // 动态类型为*os.File，动态值为此类型下的零值
 	w = new(bytes.Buffer) // 动态类型为*bytes.Buffer，动态值为此类型下的零值
 	w = nil
-	w.Write([]byte("hello"))
+	n, _ := w.Write([]byte("hello"))
+	fmt.Println(n)
 
 	// 判断空接口中的值这个时候就可以使用类型断言，其语法格式：
 	// x.(T)     x：表示类型为interface{}的变量   T：表示断言x可能是的类型。
@@ -497,6 +497,10 @@ func interfaceBasics() {
 
 }
 
+func printBook(book Book) {
+	fmt.Println(book.bookId)
+}
+
 func main() {
 	// structBasics()
 	// jsonSerializer()
@@ -504,8 +508,4 @@ func main() {
 	// valueAndExpression()
 	interfaceBasics()
 
-}
-
-func printBook(book Book) {
-	fmt.Println(book.bookId)
 }

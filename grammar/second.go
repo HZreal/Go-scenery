@@ -514,17 +514,6 @@ func channelBasics() {
 
 }
 
-func main() {
-
-	// arrBasics()
-	// sliceBasics()
-	// pointBasics()
-	// mapBasics()
-	// pointArr()
-	channelBasics()
-
-}
-
 func swap(x *int, y *int) {
 	var temp int
 	temp = *x /* 保存 x 地址的值 */
@@ -554,4 +543,15 @@ func sumArr(arr []int) int {
 func findIndex(arr []int, target int) [2]int {
 
 	return [2]int{1, 2}
+}
+
+func main() {
+
+	// arrBasics()
+	// sliceBasics()
+	// pointBasics()
+	// mapBasics()
+	// pointArr()
+	channelBasics()
+
 }

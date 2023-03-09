@@ -9,6 +9,5 @@
 .idea/
 .iml
 .xml
-.DS_Store/
-__pycache__
+.DS_Store
 

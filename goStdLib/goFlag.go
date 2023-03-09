@@ -21,7 +21,6 @@ func useOsArgs() {
 }
 
 /*
-
  */
 func flagArgs() {
 	// 两种常用的定义命令行flag参数的方法。
