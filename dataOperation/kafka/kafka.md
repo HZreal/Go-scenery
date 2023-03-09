@@ -268,4 +268,8 @@ Partition在服务器上的表现形式就是⼀个⼀个的⽂件夹，每个pa
 
 ### 2. go连接kafka使用
 
+#### producer.py
+
+#### consumer.py
+
 ### 3. python连接kafka使用
