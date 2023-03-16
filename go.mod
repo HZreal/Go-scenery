@@ -37,6 +37,8 @@ require (
 	github.com/jcmturner/gofork v1.7.6 // indirect
 	github.com/jcmturner/gokrb5/v8 v8.4.3 // indirect
 	github.com/jcmturner/rpc/v2 v2.0.3 // indirect
+	github.com/jinzhu/inflection v1.0.0 // indirect
+	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/klauspost/compress v1.15.14 // indirect
 	github.com/kr/text v0.2.0 // indirect
@@ -59,4 +61,6 @@ require (
 	google.golang.org/protobuf v1.26.0 // indirect
 	gopkg.in/fsnotify.v1 v1.4.7 // indirect
 	gopkg.in/tomb.v1 v1.0.0-20141024135613-dd632973f1e7 // indirect
+	gorm.io/driver/mysql v1.4.7 // indirect
+	gorm.io/gorm v1.24.6 // indirect
 )
