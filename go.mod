@@ -4,6 +4,7 @@ go 1.20
 
 require (
 	github.com/Shopify/sarama v1.38.1
+	github.com/bwmarrin/snowflake v0.3.0
 	github.com/garyburd/redigo v1.6.4
 	github.com/go-ini/ini v1.67.0
 	github.com/go-sql-driver/mysql v1.7.0
@@ -15,7 +16,10 @@ require (
 	github.com/olivere/elastic v6.2.37+incompatible
 	github.com/samuel/go-zookeeper v0.0.0-20201211165307-7117e9ea2414
 	github.com/satori/go.uuid v1.2.0
+	github.com/teris-io/shortid v0.0.0-20220617161101-71ec9f2aa569
 	go.etcd.io/etcd/client/v3 v3.5.7
+	gorm.io/driver/mysql v1.4.7
+	gorm.io/gorm v1.24.6
 )
 
 require (
@@ -61,6 +65,4 @@ require (
 	google.golang.org/protobuf v1.26.0 // indirect
 	gopkg.in/fsnotify.v1 v1.4.7 // indirect
 	gopkg.in/tomb.v1 v1.0.0-20141024135613-dd632973f1e7 // indirect
-	gorm.io/driver/mysql v1.4.7 // indirect
-	gorm.io/gorm v1.24.6 // indirect
 )
