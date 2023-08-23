@@ -27,6 +27,6 @@ func testShortid2() {
 }
 
 func main() {
-	testShortid1()
+	// testShortid1()
 	testShortid2()
 }
