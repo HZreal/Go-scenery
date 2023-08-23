@@ -14,6 +14,7 @@ require (
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/kardianos/osext v0.0.0-20190222173326-2bc1f35cddc0
 	github.com/olivere/elastic v6.2.37+incompatible
+	github.com/samber/lo v1.38.1
 	github.com/samuel/go-zookeeper v0.0.0-20201211165307-7117e9ea2414
 	github.com/satori/go.uuid v1.2.0
 	github.com/teris-io/shortid v0.0.0-20220617161101-71ec9f2aa569
@@ -57,6 +58,7 @@ require (
 	go.uber.org/multierr v1.6.0 // indirect
 	go.uber.org/zap v1.17.0 // indirect
 	golang.org/x/crypto v0.0.0-20220722155217-630584e8d5aa // indirect
+	golang.org/x/exp v0.0.0-20220303212507-bbda1eaf7a17 // indirect
 	golang.org/x/net v0.5.0 // indirect
 	golang.org/x/sys v0.4.0 // indirect
 	golang.org/x/text v0.6.0 // indirect
