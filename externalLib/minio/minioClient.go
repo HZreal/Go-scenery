@@ -5,6 +5,7 @@ import (
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
 	"log"
+	"os"
 )
 
 const (
@@ -17,6 +18,8 @@ const (
 var minioClient *minio.Client
 
 func init() {
+	_ = os.Chdir("externalLib/minio")
+
 	var err error
 	// Initialize minio client object.
 	minioClient, err = minio.New(endpoint, &minio.Options{
