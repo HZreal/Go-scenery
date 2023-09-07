@@ -1,6 +1,7 @@
 /*
 *
 工具库 samber/lo
+类似于 lodash.js
 github地址：https://github.com/samber/lo
 */
 package main
