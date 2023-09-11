@@ -6,7 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/go-ini/ini"
-	"goBasics/dataOperation/kafka/watchLogAndSendToKafkaCase/serve"
+	"goBasics/middleware/kafka/watchLogAndSendToKafkaCase/serve"
 	"os"
 	"runtime"
 	"strings"

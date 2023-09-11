@@ -1,4 +1,4 @@
-package gotestProject
+package gotest
 
 import "testing"
 
