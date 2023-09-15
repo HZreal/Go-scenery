@@ -3,7 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
-	"goBasics/fir_package" // 从 $GOPATH/src 或 $GOROOT/src 或者 $GOPATH/pkg/mod 目录下搜索包并导入
+	"goScenery/fir_package" // 从 $GOPATH/src 或 $GOROOT/src 或者 $GOPATH/pkg/mod 目录下搜索包并导入
 	// "../fir_package"                 // Go Modules 不支持相对导入
 	"math"
 	"net/http"
@@ -766,10 +766,10 @@ func main() {
 	// funcParamsWithUncertianLength("sum: %d", _slice...)    // 注意：使用 slice 对象做变参时，必须展开
 	// funcParamsWithUncertianLength2("first params", 12, "third params", 32, [2]int{1, 2}, map[string]string{"name": "hu", "age": "22"})
 	// anonymousFunc()
-	// funcCalled()
+	funcCalled()
 	// dataTypeConvert()
 
-	closureBasics()
+	// closureBasics()
 	// recursiveFuncBasic()
 
 	// deferBasics()

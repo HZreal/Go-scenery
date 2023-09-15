@@ -3,7 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"goBasics/netProgram/proto"
+	"goScenery/netProgram/proto"
 	"io"
 	"net"
 )

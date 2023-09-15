@@ -1,6 +1,6 @@
 # 指定包的名字（路径）
 
-module goBasics
+module goScenery
 
 go 1.17
 

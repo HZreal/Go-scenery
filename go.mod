@@ -1,4 +1,4 @@
-module goBasics
+module goScenery
 
 go 1.20
 

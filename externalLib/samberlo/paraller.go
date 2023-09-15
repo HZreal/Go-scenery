@@ -1,9 +1,3 @@
-/*
-*
-工具库 samber/lo
-类似于 lodash.js
-github地址：https://github.com/samber/lo
-*/
 package main
 
 import (
@@ -13,6 +7,13 @@ import (
 	"strconv"
 	"strings"
 )
+
+/*
+*
+工具库 samber/lo
+类似于 lodash.js
+github地址：https://github.com/samber/lo
+*/
 
 func t1() {
 	names := lo.Uniq[string]([]string{"Samuel", "John", "Samuel"})

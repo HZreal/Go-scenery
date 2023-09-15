@@ -6,6 +6,12 @@ import (
 	"time"
 )
 
+/*
+*
+生成 id
+github地址：https://github.com/teris-io/shortid
+*/
+
 func testShortid1() {
 	value, err := shortid.Generate()
 	if err != nil {

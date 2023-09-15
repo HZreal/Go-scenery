@@ -8,6 +8,12 @@ import (
 	"os"
 )
 
+/*
+*
+OSS
+github地址：https://github.com/minio/minio
+*/
+
 const (
 	endpoint        = "127.0.0.1:50021"
 	accessKeyID     = "5WXG4qQaYJGDGec3z7hk"

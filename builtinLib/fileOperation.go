@@ -9,8 +9,8 @@ import (
 	"os"
 )
 
-var filename1 = "goStdLib/123.txt"
-var filename2 = "goStdLib/456.txt"
+var filename1 = "builtinLib/123.txt"
+var filename2 = "builtinLib/456.txt"
 
 func useIOUtilToRW() {
 
@@ -62,11 +62,11 @@ func useOSToRead() {
 
 	// bufio.NewReader通过file1创建reader缓冲区，将文件中的内容预加载到缓存中，方便快速读取出来。当然，文件的内容非常多的时候，它是一部分一部分加载到缓冲区的，并不会将所有内容一次全部加载完
 	reader := bufio.NewReader(file)
-	//b3, _ := reader.Peek(4)
-	//fmt.Println(string(b3))
-	//reader.Read([]byte)
+	// b3, _ := reader.Peek(4)
+	// fmt.Println(string(b3))
+	// reader.Read([]byte)
 	// 使用 ReadBytes('\n')
-	//for {
+	// for {
 	//	// 读取一行数据
 	//	buf, err := reader.ReadBytes('\n') // 参数delim为分隔符，每次读到遇到分隔符停止，若在找到分隔符之前遇到错误(通常是io.EOF)，它会返回在错误和错误本身之前读到的数据
 	//	if err != nil && err == io.EOF {
@@ -78,7 +78,7 @@ func useOSToRead() {
 	//		break
 	//	}
 	//	fmt.Println(string(buf))
-	//}
+	// }
 	// 使用 ReadString('\n')
 	for {
 		// 读取一行数据
@@ -95,7 +95,7 @@ func useOSToRead() {
 
 func useOSToWrite() {
 	// 创建文件(实际是调用指定模式和权限的 OpenFile)
-	file, err := os.Create("goStdLib/789.txt")
+	file, err := os.Create("builtinLib/789.txt")
 	if err != nil {
 		panic(err)
 	}
@@ -104,9 +104,9 @@ func useOSToWrite() {
 		_ = file.Close()
 	}()
 
-	//n1, _ := file.Write([]byte("hello123"))
-	//n2, _ := file.WriteString("\nworld\n456")    // 内部调用的还是 *File.Write
-	//fmt.Println("两次写入的字节长度-----", n1, n2)
+	// n1, _ := file.Write([]byte("hello123"))
+	// n2, _ := file.WriteString("\nworld\n456")    // 内部调用的还是 *File.Write
+	// fmt.Println("两次写入的字节长度-----", n1, n2)
 
 	// bufio.NewWriter通过file1创建writer，再写入
 	writer := bufio.NewWriter(file)
@@ -118,7 +118,7 @@ func useOSToWrite() {
 }
 
 func main() {
-	//useIOUtilToRW()
-	//useOSToRead()
+	// useIOUtilToRW()
+	// useOSToRead()
 	useOSToWrite()
 }

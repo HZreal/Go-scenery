@@ -3,7 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"goBasics/netProgram/proto"
+	"goScenery/netProgram/proto"
 	"net"
 	"os"
 	"strings"
@@ -64,6 +64,6 @@ func client2() {
 }
 
 func main() {
-	//client1()
+	// client1()
 	client2()
 }
