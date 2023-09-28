@@ -11,7 +11,8 @@ import (
 /*
 *
 OSS
-github地址：https://github.com/minio/minio
+go client doc: https://min.io/docs/minio/linux/developers/go/minio-go.html#
+github：https://github.com/minio/minio
 */
 
 const (
