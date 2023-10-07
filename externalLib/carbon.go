@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/golang-module/carbon/v2"
+	"log"
 )
 
 /*
@@ -125,7 +126,27 @@ func parseATimeString() {
 	carbon.Parse("20200805131415.999999999+08:00").ToString() // 2020-08-05 13:14:15.999999999 +0800 CST
 }
 
+func demo() {
+	lang := carbon.NewLanguage()
+	lang.SetLocale("zh-CN")
+
+	c := carbon.SetLanguage(lang)
+	if c.Error != nil {
+		// 错误处理
+		log.Fatal(c.Error)
+	}
+
+	c.Now().AddHours(1).DiffForHumans()      // 1 小时后
+	c.Now().AddHours(1).ToMonthString()      // 八月
+	c.Now().AddHours(1).ToShortMonthString() // 8月
+	c.Now().AddHours(1).ToWeekString()       // 星期二
+	c.Now().AddHours(1).ToShortWeekString()  // 周二
+	c.Now().AddHours(1).Constellation()      // 狮子座
+	c.Now().AddHours(1).Season()             // 夏季
+}
+
 func main() {
-	yesterdayTodayTomorrow()
-	parseATimeString()
+	//yesterdayTodayTomorrow()
+	//parseATimeString()
+	demo()
 }
