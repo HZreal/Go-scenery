@@ -6,7 +6,23 @@ You can enjoy it as you like
 
 ## Directory Tree
 
-this section will come soon
+```
+├── alg&datastructure
+├── assets
+├── basics
+├── builtinLib
+├── concurrence
+├── externalLib
+├── fir_package
+├── go.mod.md
+├── gotest
+├── main.go
+├── middleware
+├── netProgram
+└── spider
+```
+
+
 
 ## Note
 
