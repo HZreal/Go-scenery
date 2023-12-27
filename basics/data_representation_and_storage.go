@@ -8,7 +8,7 @@ import (
 
 /**
 * @author
-* @description //TODO
+* @description 按字节解析 .mp 二进制文件
 * @date
 * @param
 * @return
