@@ -224,7 +224,7 @@ func pointBasics() {
 	// make函数
 	// make也是用于内存分配的，区别于new，它只用于slice、map以及chan的内存创建，而且它返回的类型就是这三个类型本身，而不是他们的指针类型，因为这三种类型就是引用类型，所以就没有必要返回他们的指针了
 	// 函数定义 func make(t Type, size ...IntegerType) Type {}
-	// var _map map[string]int               // 只是声明变量b是一个map类型的变量，没有初始化，不能赋值
+	// var _map map[string]int               // 只是声明变量 _map 是一个map类型的变量，没有初始化，不能赋值
 	// _map = make(map[string]int, 10)       // 用make函数进行初始化操作之后，才能对其进行键值对赋值
 	// _map["测试"] = 100
 	// fmt.Println(_map)
