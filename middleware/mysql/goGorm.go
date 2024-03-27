@@ -25,10 +25,10 @@ type User struct {
 	DeletedAt    gorm.DeletedAt `gorm:"index"`
 }
 
-//type User2 struct {
+// type User2 struct {
 //	gorm.Model
 //	Name string
-//}
+// }
 
 func (u User) TableName() string {
 	return "user"
@@ -72,85 +72,85 @@ func autoBuildTable() {
 	// 迁移
 	_ = db.AutoMigrate(&User{})
 
-	//_ = db.AutoMigrate(&User{}, &Product{}, &Order{})
+	// _ = db.AutoMigrate(&User{}, &Product{}, &Order{})
 
 	// Add table suffix when creating tables
-	//db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&User{})
+	// db.Set("gorm:table_options", "ENGINE=InnoDB").AutoMigrate(&User{})
 
 	// TODO Migrator Interface
 
-	//Returns current using database name
-	//db.Migrator().CurrentDatabase()
+	// Returns current using database name
+	// db.Migrator().CurrentDatabase()
 
-	//table
+	// table
 	// Create table for `User`
-	//db.Migrator().CreateTable(&User{})
+	// db.Migrator().CreateTable(&User{})
 
 	// Append "ENGINE=InnoDB" to the creating table SQL for `User`
-	//db.Set("gorm:table_options", "ENGINE=InnoDB").Migrator().CreateTable(&User{})
+	// db.Set("gorm:table_options", "ENGINE=InnoDB").Migrator().CreateTable(&User{})
 
 	// Check table for `User` exists or not
-	//db.Migrator().HasTable(&User{})
-	//db.Migrator().HasTable("users")
+	// db.Migrator().HasTable(&User{})
+	// db.Migrator().HasTable("users")
 
 	// Drop table if exists (will ignore or delete foreign key constraints when dropping)
-	//db.Migrator().DropTable(&User{})
-	//db.Migrator().DropTable("users")
+	// db.Migrator().DropTable(&User{})
+	// db.Migrator().DropTable("users")
 
 	// Rename old table to new table
-	//db.Migrator().RenameTable(&User{}, &UserInfo{})
-	//db.Migrator().RenameTable("users", "user_infos")
+	// db.Migrator().RenameTable(&User{}, &UserInfo{})
+	// db.Migrator().RenameTable("users", "user_infos")
 
-	//Columns
+	// Columns
 
-	//Constraints
+	// Constraints
 
-	//Indexes
+	// Indexes
 }
 
 func curdOperate() {
 	//
-	//c()
+	// c()
 	//
-	//u()
+	// u()
 	//
 	r()
 	//
-	//d()
+	// d()
 
 }
 
 func c() {
-	//https://gorm.io/docs/create.html
+	// https://gorm.io/docs/create.html
 
 	// create
-	//user := User{Name: "huang", Age: 18}
-	//result := db.Create(&user) // pass pointer of data to Create
-	//fmt.Println(user.ID, result.Error, result.RowsAffected)
+	// user := User{Name: "huang", Age: 18}
+	// result := db.Create(&user) // pass pointer of data to Create
+	// fmt.Println(user.ID, result.Error, result.RowsAffected)
 
-	//Create a record and assign a value to the fields specified.
-	//db.Select("Name", "Age", "CreatedAt").Create(&User{Name: "hhhhh", Age: 18})
+	// Create a record and assign a value to the fields specified.
+	// db.Select("Name", "Age", "CreatedAt").Create(&User{Name: "hhhhh", Age: 18})
 
-	//Create a record and ignore the values for fields passed to omit.
-	//db.Omit("Name", "Age", "CreatedAt").Create(&User{Name: "zzzz", Age: 19})
+	// Create a record and ignore the values for fields passed to omit.
+	// db.Omit("Name", "Age", "CreatedAt").Create(&User{Name: "zzzz", Age: 19})
 
-	//Batch Insert
+	// Batch Insert
 	var users = []User{{Name: "hhh111"}, {Name: "hhh222"}, {Name: "hhh333"}}
 	db.Create(&users)
 	// batch size 100
-	//db.CreateInBatches(users, 100)
+	// db.CreateInBatches(users, 100)
 
-	//Create Hooks
+	// Create Hooks
 
-	//Create From Map
+	// Create From Map
 
-	//Create From SQL Expression/Context Valuer
+	// Create From SQL Expression/Context Valuer
 
-	//Create With Associations
+	// Create With Associations
 }
 
 func u() {
-	//https://gorm.io/docs/update.html
+	// https://gorm.io/docs/update.html
 
 	var user User
 	db.First(&user)
@@ -162,7 +162,7 @@ func u() {
 	db.Save(&user)
 	// UPDATE users SET name='jinzhu 2', age=100, birthday='2016-01-01', updated_at = '2013-11-17 21:34:10' WHERE id=111;
 
-	//Update single column
+	// Update single column
 	// Update with conditions
 	db.Model(&User{}).Where("active = ?", true).Update("name", "hello")
 	// UPDATE users SET name='hello', updated_at='2013-11-17 21:34:10' WHERE active=true;
@@ -184,13 +184,13 @@ func u() {
 	db.Model(&user).Updates(map[string]interface{}{"name": "hello", "age": 18, "active": false})
 	// UPDATE users SET name='hello', age=18, active=false, updated_at='2013-11-17 21:34:10' WHERE id=111;
 
-	//Update Selected Fields
+	// Update Selected Fields
 
-	//Update Hooks
+	// Update Hooks
 
-	//Batch Updates
+	// Batch Updates
 
-	//Update with SQL Expression
+	// Update with SQL Expression
 }
 
 func r() {
@@ -208,71 +208,71 @@ func r() {
 	fmt.Println(result.Row(), result2.Row())
 
 	// Get one record, no specified order
-	//db.Take(&user)
+	// db.Take(&user)
 	// SELECT * FROM users LIMIT 1;
 
 	// Get last record, ordered by primary key desc
-	//db.Last(&user)
+	// db.Last(&user)
 	// SELECT * FROM users ORDER BY id DESC LIMIT 1;
 
-	//result := db.First(&user)
-	//fmt.Println(result.RowsAffected, result.Error)
-	//result.RowsAffected // returns count of records found
-	//result.Error        // returns error or nil
+	// result := db.First(&user)
+	// fmt.Println(result.RowsAffected, result.Error)
+	// result.RowsAffected // returns count of records found
+	// result.Error        // returns error or nil
 
 	// check error ErrRecordNotFound
-	//errors.Is(result.Error, gorm.ErrRecordNotFound)
+	// errors.Is(result.Error, gorm.ErrRecordNotFound)
 
 	// !!!note: the three methods below will return the error ErrRecordNotFound if no record is found
 	// If you want to avoid the ErrRecordNotFound error, you could use Find like db.Limit(1).Find(&user), the Find method accepts both struct and slice data
 
 	db.Find(&users)
 
-	//Conditions
+	// Conditions
 	// Get first matched record
 	db.Where("name = ?", "jinzhu").First(&user)
 	// SELECT * FROM users WHERE name = 'jinzhu' ORDER BY id LIMIT 1;
 
 	// Get all matched records
-	//db.Where("name <> ?", "jinzhu").Find(&users)
+	// db.Where("name <> ?", "jinzhu").Find(&users)
 	// SELECT * FROM users WHERE name <> 'jinzhu';
 
 	// IN
-	//db.Where("name IN ?", []string{"jinzhu", "jinzhu 2"}).Find(&users)
+	// db.Where("name IN ?", []string{"jinzhu", "jinzhu 2"}).Find(&users)
 	// SELECT * FROM users WHERE name IN ('jinzhu','jinzhu 2');
 
 	// LIKE
-	//db.Where("name LIKE ?", "%jin%").Find(&users)
+	// db.Where("name LIKE ?", "%jin%").Find(&users)
 	// SELECT * FROM users WHERE name LIKE '%jin%';
 
 	// AND
-	//db.Where("name = ? AND age >= ?", "jinzhu", "22").Find(&users)
+	// db.Where("name = ? AND age >= ?", "jinzhu", "22").Find(&users)
 	// SELECT * FROM users WHERE name = 'jinzhu' AND age >= 22;
 
 	// Time
-	//db.Where("updated_at > ?", "lastWeek").Find(&users)
+	// db.Where("updated_at > ?", "lastWeek").Find(&users)
 	// SELECT * FROM users WHERE updated_at > '2000-01-01 00:00:00';
 
 	// BETWEEN
-	//db.Where("created_at BETWEEN ? AND ?", "lastWeek", "today").Find(&users)
+	// db.Where("created_at BETWEEN ? AND ?", "lastWeek", "today").Find(&users)
 	// SELECT * FROM users WHERE created_at BETWEEN '2000-01-01 00:00:00' AND '2000-01-08 00:00:00';
 
-	//Struct & Map Conditions
+	// Struct & Map Conditions
 	// Struct
-	//db.Where(&User{Name: "jinzhu", Age: 20}).First(&user)
+	// db.Where(&User{Name: "jinzhu", Age: 20}).First(&user)
 	// SELECT * FROM users WHERE name = "jinzhu" AND age = 20 ORDER BY id LIMIT 1;
 
 	// Map
-	//db.Where(map[string]interface{}{"name": "jinzhu", "age": 20}).Find(&users)
+	// db.Where(map[string]interface{}{"name": "jinzhu", "age": 20}).Find(&users)
 	// SELECT * FROM users WHERE name = "jinzhu" AND age = 20;
 
 	// Slice of primary keys
-	//db.Where([]int64{20, 21, 22}).Find(&users)
+	// db.Where([]int64{20, 21, 22}).Find(&users)
 	// SELECT * FROM users WHERE id IN (20, 21, 22);
 }
 
 func d() {
-	//db.Delete(&User{}, 1)
+	// db.Delete(&User{}, 1)
 
 }
 
@@ -283,7 +283,7 @@ type Result struct {
 }
 
 func rawSqlAndSQLBuilder() {
-	//Query Raw SQL with Scan
+	// Query Raw SQL with Scan
 
 	var (
 		result Result
@@ -299,14 +299,14 @@ func rawSqlAndSQLBuilder() {
 	var users []User
 	db.Raw("UPDATE users SET name = ? WHERE age = ? RETURNING id, name", "jinzhu", 20).Scan(&users)
 
-	//Exec with Raw SQL
+	// Exec with Raw SQL
 	db.Exec("DROP TABLE users")
 	db.Exec("UPDATE orders SET shipped_at = ? WHERE id IN ?", time.Now(), []int64{1, 2, 3})
 
 	// Exec with SQL Expression
 	db.Exec("UPDATE users SET money = ? WHERE name = ?", gorm.Expr("money * ? + ?", 10000, 1), "jinzhu")
 
-	//Named Argument
+	// Named Argument
 	db.Where("name1 = @name OR name2 = @name", sql.Named("name", "jinzhu")).Find(&user)
 	// SELECT * FROM `users` WHERE name1 = "jinzhu" OR name2 = "jinzhu"
 
@@ -338,7 +338,7 @@ func rawSqlAndSQLBuilder() {
 
 func main() {
 	// 迁移
-	//autoBuildTable()
+	// autoBuildTable()
 
 	// 执行数据库查询操作
 	curdOperate()
