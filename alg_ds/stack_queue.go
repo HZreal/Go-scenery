@@ -88,7 +88,7 @@ func (stack *ArrayStack) IsEmpty() bool {
 	return stack.size == 0
 }
 
-func main() {
+func ttest1() {
 	arrayStack := new(ArrayStack)
 	arrayStack.Push("cat")
 	arrayStack.Push("dog")
@@ -99,4 +99,104 @@ func main() {
 	fmt.Println("size:", arrayStack.GetSize())
 	arrayStack.Push("drag")
 	fmt.Println("pop:", arrayStack.Pop())
+}
+
+// LinkNode_ 链栈节点
+type LinkNode_ struct {
+	Value interface{}
+	Next  *LinkNode_
+}
+
+// LinkStack 链栈/*
+type LinkStack struct {
+	root *LinkNode_
+	size int
+	lock sync.Mutex
+}
+
+// 获取栈大小
+func (stack *LinkStack) Size() int {
+	return stack.size
+}
+
+// 判空
+func (stack *LinkStack) IsEmpty() bool {
+	return stack.size == 0
+}
+
+// 获取栈顶元素
+func (stack *LinkStack) Peek() interface{} {
+	if stack.size == 0 {
+		panic("Empty stack")
+	}
+
+	return stack.root.Value
+}
+
+// 入栈
+func (stack *LinkStack) Push(value interface{}) {
+	stack.lock.Lock()
+	defer stack.lock.Unlock()
+
+	if stack.root == nil {
+		// 为空栈，新增
+		stack.root = new(LinkNode_)
+		stack.root.Value = value
+	} else {
+		// 非空栈，将新增的节点置为头节点
+		preTop := stack.root
+
+		// 新节点
+		newTop := new(LinkNode_)
+		newTop.Value = value
+
+		// 原来的链表链接到新元素后面
+		newTop.Next = preTop
+
+		// 将新节点放在头部
+		stack.root = newTop
+	}
+
+	// 栈中元素数量+1
+	stack.size++
+}
+
+// 出栈
+func (stack *LinkStack) Pop() interface{} {
+	stack.lock.Lock()
+	defer stack.lock.Unlock()
+
+	// 空栈无法 Pop
+	if stack.root == nil {
+		panic("Empty stack")
+	}
+
+	// 取栈顶节点值
+	topNode := stack.root.Value
+
+	// 将栈顶元素的后继节点作为栈的栈顶节点
+	stack.root = stack.root.Next
+
+	//
+	stack.size--
+
+	return topNode
+}
+
+func ttest2() {
+	linkStack := new(LinkStack)
+	linkStack.Push("cat")
+	linkStack.Push("dog")
+	linkStack.Push("hen")
+	fmt.Println("size:", linkStack.Size())
+	fmt.Println("pop:", linkStack.Pop())
+	fmt.Println("pop:", linkStack.Pop())
+	fmt.Println("size:", linkStack.Size())
+	linkStack.Push("drag")
+	fmt.Println("pop:", linkStack.Pop())
+}
+
+func main() {
+	// ttest1()
+	ttest2()
 }
