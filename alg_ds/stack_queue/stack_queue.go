@@ -88,7 +88,7 @@ func (stack *ArrayStack) IsEmpty() bool {
 	return stack.size == 0
 }
 
-func ttest1() {
+func test1() {
 	arrayStack := new(ArrayStack)
 	arrayStack.Push("cat")
 	arrayStack.Push("dog")
@@ -100,6 +100,8 @@ func ttest1() {
 	arrayStack.Push("drag")
 	fmt.Println("pop:", arrayStack.Pop())
 }
+
+// //////////////////////////////////////////////////////////////
 
 // LinkNode 链栈节点
 type LinkNode struct {
@@ -183,7 +185,7 @@ func (stack *LinkStack) Pop() interface{} {
 	return topNode
 }
 
-func ttest2() {
+func test2() {
 	linkStack := new(LinkStack)
 	linkStack.Push("cat")
 	linkStack.Push("dog")
@@ -196,7 +198,139 @@ func ttest2() {
 	fmt.Println("pop:", linkStack.Pop())
 }
 
+// //////////////////////////////////////////////////////////////
+
+// ArrayQueue 数组队列
+//
+//	head  <<<<<<< ArrayQueue <<<<<<< tail
+type ArrayQueue struct {
+	array []interface{}
+	size  int
+	lock  sync.Mutex
+}
+
+// Add 入队，从尾部添加
+func (queue *ArrayQueue) Add(v interface{}) {
+	queue.lock.Lock()
+	defer queue.lock.Unlock()
+
+	queue.array = append(queue.array, v)
+
+	queue.size++
+}
+
+// Remove 出队，从头部移除
+func (queue *ArrayQueue) Remove() interface{} {
+	queue.lock.Lock()
+	defer queue.lock.Unlock()
+
+	if queue.size == 0 {
+		panic("Empty Queue")
+	}
+
+	head := queue.array[0]
+
+	// 切片，但空间不会被释放
+	// queue.array = queue.array[1:queue.size]
+
+	// 创建新数组
+	newArr := make([]interface{}, queue.size-1, queue.size-1)
+	for i := 0; i < queue.size-1; i++ {
+		newArr[i] = queue.array[i+1]
+	}
+	queue.array = newArr
+
+	//
+	queue.size--
+
+	return head
+}
+
+func (queue *ArrayQueue) IsEmpty() bool {
+	return queue.size == 0
+}
+
+func (queue *ArrayQueue) Size() int {
+	return queue.size
+}
+
+func test3() {
+
+}
+
+// //////////////////////////////////////////////////////////////
+
+// LinkQueue 链式队列
+//
+//	head  <<<<<<< LinkQueue <<<<<<< tail
+type LinkQueue struct {
+	root *LinkNode
+	size int
+	lock sync.Mutex
+}
+
+// Add 入队，从尾部添加
+func (queue *LinkQueue) Add(v interface{}) {
+	queue.lock.Lock()
+	defer queue.lock.Unlock()
+
+	// 创建新增的节点
+	newNode := new(LinkNode)
+	newNode.Value = v
+
+	if queue.size == 0 {
+		// 空队列，直接新建
+		queue.root = newNode
+	} else {
+		// 非空队列，在尾部添加
+
+		// 先遍历找到尾节点
+		nowNode := queue.root
+		if nowNode.Next != nil {
+			nowNode = nowNode.Next
+		}
+
+		// 将新节点链接到尾部节点
+		nowNode.Next = newNode
+	}
+
+	//
+	queue.size++
+}
+
+// Remove 出队，从头部移除
+func (queue *LinkQueue) Remove() interface{} {
+	queue.lock.Lock()
+	defer queue.lock.Unlock()
+
+	if queue.size == 0 {
+		panic("Empty queue")
+	}
+
+	headNode := queue.root
+	v := headNode.Value
+
+	queue.root = headNode.Next
+	queue.size--
+
+	return v
+}
+
+func (queue *LinkQueue) IsEmpty() bool {
+	return queue.size == 0
+}
+
+func (queue *LinkQueue) Size() int {
+	return queue.size
+}
+
+func test4() {
+
+}
+
 func main() {
-	// ttest1()
-	ttest2()
+	// test1()
+	// test2()
+	// test3()
+	test4()
 }
