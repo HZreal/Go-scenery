@@ -20,6 +20,7 @@ type ArrayStack struct {
 }
 
 // Push 入栈
+// 时间复杂度为 O(1)
 func (stack *ArrayStack) Push(v string) {
 	stack.lock.Lock()
 	defer stack.lock.Unlock()
@@ -46,10 +47,12 @@ func (stack *ArrayStack) Pop() string {
 
 	// 法1: 通过切片的方式收缩，去掉 array 尾部元素
 	// 可能占用空间越来越大
+	// 操作的时间复杂度为：O(1)
 	// stack.array = stack.array[0 : stack.size-1]
 
 	// 法2: 新建数组，保存去除元素后的数组
 	// 空间占用不会越来越大，但可能移动元素次数过多
+	// 时间复杂度为：O(n)
 	newArr := make([]string, stack.size-1)
 	for i := 0; i < stack.size-1; i++ {
 		newArr[i] = stack.array[i]
@@ -116,17 +119,17 @@ type LinkStack struct {
 	lock sync.Mutex
 }
 
-// 获取栈大小
+// Size 获取栈大小
 func (stack *LinkStack) Size() int {
 	return stack.size
 }
 
-// 判空
+// IsEmpty 判空
 func (stack *LinkStack) IsEmpty() bool {
 	return stack.size == 0
 }
 
-// 获取栈顶元素
+// Peek 获取栈顶元素
 func (stack *LinkStack) Peek() interface{} {
 	if stack.size == 0 {
 		panic("Empty stack")
@@ -135,7 +138,8 @@ func (stack *LinkStack) Peek() interface{} {
 	return stack.root.Value
 }
 
-// 入栈
+// Push 入栈
+// 时间复杂度为：O(1)
 func (stack *LinkStack) Push(value interface{}) {
 	stack.lock.Lock()
 	defer stack.lock.Unlock()
@@ -163,7 +167,8 @@ func (stack *LinkStack) Push(value interface{}) {
 	stack.size++
 }
 
-// 出栈
+// Pop 出栈
+// 时间复杂度为：O(1)
 func (stack *LinkStack) Pop() interface{} {
 	stack.lock.Lock()
 	defer stack.lock.Unlock()
@@ -210,6 +215,7 @@ type ArrayQueue struct {
 }
 
 // Add 入队，从尾部添加
+// 时间复杂度为：O(n)
 func (queue *ArrayQueue) Add(v interface{}) {
 	queue.lock.Lock()
 	defer queue.lock.Unlock()
@@ -220,6 +226,7 @@ func (queue *ArrayQueue) Add(v interface{}) {
 }
 
 // Remove 出队，从头部移除
+// 时间复杂度是：O(n)
 func (queue *ArrayQueue) Remove() interface{} {
 	queue.lock.Lock()
 	defer queue.lock.Unlock()
@@ -270,6 +277,7 @@ type LinkQueue struct {
 }
 
 // Add 入队，从尾部添加
+// 需要遍历链表，时间复杂度为：O(n)
 func (queue *LinkQueue) Add(v interface{}) {
 	queue.lock.Lock()
 	defer queue.lock.Unlock()
@@ -299,6 +307,7 @@ func (queue *LinkQueue) Add(v interface{}) {
 }
 
 // Remove 出队，从头部移除
+// 链表第一个节点出队，时间复杂度为：O(1)
 func (queue *LinkQueue) Remove() interface{} {
 	queue.lock.Lock()
 	defer queue.lock.Unlock()
@@ -329,8 +338,8 @@ func test4() {
 }
 
 func main() {
-	// test1()
-	// test2()
-	// test3()
+	test1()
+	test2()
+	test3()
 	test4()
 }
