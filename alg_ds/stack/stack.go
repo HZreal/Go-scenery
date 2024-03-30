@@ -101,15 +101,15 @@ func ttest1() {
 	fmt.Println("pop:", arrayStack.Pop())
 }
 
-// LinkNode_ 链栈节点
-type LinkNode_ struct {
+// LinkNode 链栈节点
+type LinkNode struct {
 	Value interface{}
-	Next  *LinkNode_
+	Next  *LinkNode
 }
 
 // LinkStack 链栈/*
 type LinkStack struct {
-	root *LinkNode_
+	root *LinkNode
 	size int
 	lock sync.Mutex
 }
@@ -140,14 +140,14 @@ func (stack *LinkStack) Push(value interface{}) {
 
 	if stack.root == nil {
 		// 为空栈，新增
-		stack.root = new(LinkNode_)
+		stack.root = new(LinkNode)
 		stack.root.Value = value
 	} else {
 		// 非空栈，将新增的节点置为头节点
 		preTop := stack.root
 
 		// 新节点
-		newTop := new(LinkNode_)
+		newTop := new(LinkNode)
 		newTop.Value = value
 
 		// 原来的链表链接到新元素后面
