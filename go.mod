@@ -4,6 +4,7 @@ go 1.20
 
 require (
 	github.com/Shopify/sarama v1.38.1
+	github.com/atotto/clipboard v0.1.4
 	github.com/bwmarrin/snowflake v0.3.0
 	github.com/code-elastic/open-api-client-sdk-go v0.0.0-20240412153128-6b7fe3cfd9c3
 	github.com/garyburd/redigo v1.6.4
