@@ -67,6 +67,15 @@ func arrBasics() {
 
 }
 
+func sliceRange() {
+	arr := []int{1, 2, 3, 4}
+	for i, v := range arr {
+		fmt.Println("i=", i)
+		fmt.Println("v=", arr[i])
+		fmt.Println(&v)
+	}
+}
+
 // 切片   -----> 数组的一个引用
 func sliceBasics() {
 	// 1. 切片：切片是`数组的一个引用`，因此`切片是引用类型`。但`自身是结构体`，值拷贝传递。
@@ -159,6 +168,9 @@ func sliceBasics() {
 	// 1.1.11. 字符串和切片（string and slice
 
 	// 1.1.12. 含有中文字符串
+
+	//
+	sliceRange()
 
 }
 
@@ -552,6 +564,6 @@ func main() {
 	// pointBasics()
 	// mapBasics()
 	// pointArr()
-	channelBasics()
+	// channelBasics()
 
 }

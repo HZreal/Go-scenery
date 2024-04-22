@@ -363,6 +363,18 @@ func justifyType(x interface{}) {
 	}
 }
 
+type i interface {
+	Say(s string) string
+}
+type People struct {
+	Name string
+}
+
+func (p *People) Say(s string) string {
+	fmt.Println(p.Name)
+	return s
+}
+
 // 接口
 func interfaceBasics() {
 	// 接口（interface）定义了一个对象的行为规范，只定义规范不实现，由具体的对象来实现规范的细节
@@ -494,6 +506,12 @@ func interfaceBasics() {
 	} else {
 		fmt.Println("类型断言失败")
 	}
+
+	// 当某种类型 T 实现了某接口 i，则可以初始化该类型并赋给该接口
+	var ss i
+	ss = new(People)
+	ss.(*People).Name = "fff"
+	ss.Say("ddd")
 
 }
 
