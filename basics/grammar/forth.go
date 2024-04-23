@@ -645,7 +645,8 @@ func NewError(code int, msg string) *MyError {
 }
 
 func Code(err error) int {
-	if e, ok := err.(MyError); ok {
+	var e MyError
+	if errors.As(err, &e) {
 		return e.code
 	}
 	return -1
