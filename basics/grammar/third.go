@@ -519,11 +519,75 @@ func printBook(book Book) {
 	fmt.Println(book.bookId)
 }
 
+// //////////////////// 接口作为参数 //////////////////////
+
+type Reader interface {
+	Read() int
+}
+
+type MyReader struct {
+	a, b int
+}
+
+func (m *MyReader) Read() int {
+	return m.a + m.b
+}
+
+func DoJob(r Reader) {
+	fmt.Printf("myReader is %d\n", r.Read())
+}
+
+func interfaceAsParameter() {
+	myReader := &MyReader{2, 5}
+	DoJob(myReader)
+}
+
+// //////////////////// 接口嵌套 //////////////////////
+
+type A interface {
+	run1()
+}
+
+type B interface {
+	run2()
+}
+
+// 定义继承接口C
+type C interface {
+	A
+	B
+	run3()
+}
+
+type Runner struct{}
+
+// 实现接口A的方法
+func (r Runner) run1() {
+	fmt.Println("run1!!!!")
+}
+
+// 实现接口B的方法
+func (r Runner) run2() {
+	fmt.Println("run2!!!!")
+}
+
+func (r Runner) run3() {
+	fmt.Println("run3!!!!")
+}
+
+func interfaceEmbed() {
+	r := Runner{}
+	r.run1()
+	r.run2()
+	r.run3()
+}
+
 func main() {
 	// structBasics()
 	// jsonSerializer()
 	// structTag()
 	// valueAndExpression()
 	interfaceBasics()
-
+	interfaceAsParameter()
+	interfaceEmbed()
 }
