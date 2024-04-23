@@ -614,11 +614,11 @@ func (p *PathError) Error() string {
 	return fmt.Sprintf("path=%s \nop=%s \ncreateTime=%s \nmessage=%s", p.path,
 		p.op, p.createTime, p.message)
 }
-func Open(filename string) error { // 返回值 error 为一个接口  类型PathError实现了error() string方法，即实现了这个接口
+func Open(filename string) (*os.File, error) { // 返回值 error 为一个接口  类型PathError实现了error() string方法，即实现了这个接口
 
 	file, err := os.Open(filename)
 	if err != nil {
-		return &PathError{
+		return nil, &PathError{
 			path:       filename,
 			op:         "read",
 			message:    err.Error(),
@@ -627,8 +627,43 @@ func Open(filename string) error { // 返回值 error 为一个接口  类型Pat
 	}
 
 	defer file.Close()
-	return nil
+	return file, nil
 }
+
+// 自定义错误
+type MyError struct {
+	code int
+	msg  string
+}
+
+func (m MyError) Error() string {
+	return fmt.Sprintf("code=%d msg=%s", m.code, m.msg)
+}
+
+func NewError(code int, msg string) *MyError {
+	return &MyError{code: code, msg: msg}
+}
+
+func Code(err error) int {
+	if e, ok := err.(MyError); ok {
+		return e.code
+	}
+	return -1
+}
+
+func Msg(err error) string {
+	if e, ok := err.(MyError); ok {
+		return e.msg
+	}
+	return ""
+}
+
+func testMyError() {
+	err := NewError(9999, "Unknown Error")
+	fmt.Printf("code is %d, msg is %s", Code(err), Msg(err))
+}
+
+// ////////////////////////panic & Recover/////////////////////////////
 
 // panic & Recover
 func panicRecoverBasics() {
@@ -680,7 +715,7 @@ func panicRecoverBasics() {
 
 	// 自定义异常
 	// 类型：PathError   定义error方法
-	err := Open("/Users/5lmh/Desktop/go/src/test.txt")
+	_, err := Open("/Users/5lmh/Desktop/go/src/test.txt")
 	switch v := err.(type) {
 	case *PathError:
 		fmt.Println("get path error,", v)
@@ -773,6 +808,8 @@ func main() {
 	// recursiveFuncBasic()
 
 	// deferBasics()
+
+	// testMyError()
 
 	// panicRecoverBasics()
 

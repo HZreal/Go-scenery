@@ -80,6 +80,50 @@ func (d *Dog) wang() {
 	fmt.Printf("%s can wangwangwang\n", d.Animal.name)
 }
 
+// //////////////////////// 值接收器 & 指针接收器 /////////////////////////////
+// 如果一个接口方法是用指针接收器定义的，那么只有指针类型的变量才能实现该接口。
+// 如果一个接口方法是用值接收器定义的，那么值类型和指针类型的变量都可以实现该接口。
+
+type Describer interface {
+	Describe() string
+}
+type Person struct {
+	Name string
+	Age  int
+}
+
+type Person2 struct {
+	Name string
+	Age  int
+}
+
+// value receiver
+func (p Person) Describe() string {
+	return fmt.Sprintf("%s is %d years old", p.Name, p.Age)
+}
+
+// point receiver
+func (p *Person2) Describe() string {
+	return fmt.Sprintf("%s is %d years old", p.Name, p.Age)
+}
+
+func testValueReceiver() {
+	p := Person{"Alice", 30}
+	var d Describer = p // Person 值类型
+	fmt.Println(d.Describe())
+
+	pd := &p
+	d = pd // Person 指针类型
+	fmt.Println(d.Describe())
+}
+
+func testPointReceiver() {
+	p := Person2{"Bob", 25}
+	// var d Describer = p  // 这会产生编译错误，因为 p 是一个值
+	var d Describer = &p // 这是正确的，因为 &p 是一个指针
+	fmt.Println(d.Describe())
+}
+
 func structBasics() {
 	// 使用type关键字来定义自定义类型
 	// 类型定义：type newType existType       // 自定义新的数据类型newType，具有已存在existType的特性
@@ -584,6 +628,8 @@ func interfaceEmbed() {
 
 func main() {
 	// structBasics()
+	// testValueReceiver()
+	// testPointReceiver()
 	// jsonSerializer()
 	// structTag()
 	// valueAndExpression()
