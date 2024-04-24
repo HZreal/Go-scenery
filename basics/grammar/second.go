@@ -389,7 +389,6 @@ func testChannelClose2() {
 	go func() {
 		for i := 0; i < 20; i++ {
 			ch1 <- i
-
 		}
 		close(ch1)
 	}()
@@ -411,6 +410,27 @@ func testChannelClose2() {
 		fmt.Println(i)
 	}
 
+}
+
+// 不关闭通道时，for range 将阻塞等待
+func testChannelClose3() {
+	ch := make(chan int, 5)
+	ch <- 1
+	ch <- 2
+	ch <- 3
+
+	// 注意：不关闭 ch，range 操作会一直阻塞等待，只有关闭了 ch，range 循环读取完成才会退出循环
+	// close(ch)
+
+	go func() {
+		for v := range ch {
+			fmt.Println(v)
+		}
+		fmt.Println("range over") // 如果不 close(ch)，此行代码不会执行
+	}()
+	fmt.Println("111")
+	time.Sleep(time.Second * 10)
+	fmt.Println("222")
 }
 
 // 发送数据给out通道
@@ -514,6 +534,9 @@ func channelBasics() {
 	// 1.1.8. 如何优雅的从通道循环取值
 	// 有两种方式在接收值的时候判断通道是否被关闭，我们通常使用的是for range的方式
 	// testChannelClose2()
+
+	// 不关闭通道时，for range 将阻塞等待
+	testChannelClose3()
 
 	// 1.1.9. 单向通道
 	// 有的时候我们会将通道作为函数参数在多个任务函数间传递，很多时候我们在不同的任务函数中使用通道都会对其进行限制，比如限制通道在函数中只能发送或只能接收，单向通道就是来处理这种情况
