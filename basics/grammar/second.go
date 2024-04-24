@@ -468,6 +468,28 @@ func simplexChannel() {
 	printer(ch2)
 }
 
+func implicitTypeConversion() {
+	type SChannel chan<- int
+	type RChannel <-chan int
+
+	var ch = make(chan int) // 创建channel
+
+	go func() {
+		var send SChannel = ch // 将 ch 赋值给 send 或 rec 时，会发生隐式类型转换
+		fmt.Println("send: 100")
+		send <- 100
+	}()
+
+	go func() {
+		var rec RChannel = ch // 将 ch 赋值给 send 或 rec 时，会发生隐式类型转换
+		num := <-rec
+		fmt.Printf("receive: %d", num)
+	}()
+
+	time.Sleep(2 * time.Second)
+
+}
+
 // 通道channel
 func channelBasics() {
 	// 通道（channel）是一种特殊的类型。通道像一个传送带或者队列，总是遵循先入先出（First In First Out）的规则，保证收发数据的顺序。每一个通道都是一个具体类型的导管，也就是声明channel的时候需要为其指定元素类型
@@ -536,14 +558,18 @@ func channelBasics() {
 	// testChannelClose2()
 
 	// 不关闭通道时，for range 将阻塞等待
-	testChannelClose3()
+	// testChannelClose3()
 
 	// 1.1.9. 单向通道
 	// 有的时候我们会将通道作为函数参数在多个任务函数间传递，很多时候我们在不同的任务函数中使用通道都会对其进行限制，比如限制通道在函数中只能发送或只能接收，单向通道就是来处理这种情况
 	//      chan<- int是一个只能发送的通道，可以发送但是不能接收；
 	//      <-chan int是一个只能接收的通道，可以接收但是不能发送。
 	// 在函数传参或者任何赋值操作中将双向通道转换为单向通道是可以的，但反过来是不可以的
-	simplexChannel() // 将函数testChannelClose2以通道传参的形式实现
+	// simplexChannel() // 将函数testChannelClose2以通道传参的形式实现
+
+	// 隐式类型转换
+	// channel 类型可以隐式转换为只读 (<-chan T) 或只写 (chan<- T) 的 channel 类型,，但不能显式转换
+	// implicitTypeConversion()
 
 	// 1.1.10. channel常见的异常总结
 
@@ -587,6 +613,6 @@ func main() {
 	// pointBasics()
 	// mapBasics()
 	// pointArr()
-	// channelBasics()
+	channelBasics()
 
 }
