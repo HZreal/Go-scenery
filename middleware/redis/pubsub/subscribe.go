@@ -21,7 +21,10 @@ func main() {
 		DB:   15, // 使用 15 数据库
 	})
 
-	pubsub := rdb.Subscribe(ctx, "test_channel")
+	// pubsub := rdb.Subscribe(ctx, "test_channel")
+	// 使用模式匹配订阅所有以 'channel' 开头的频道
+	pubsub := rdb.PSubscribe(ctx, "test*")
+
 	defer pubsub.Close()
 
 	// 等待订阅确认
