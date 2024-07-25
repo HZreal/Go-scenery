@@ -2,7 +2,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/garyburd/redigo/redis"
+	// "github.com/garyburd/redigo/redis"
+	"github.com/gomodule/redigo/redis"
 )
 
 // Redis支持数据的持久化(RDB、AOF)，可以将内存中的数据保存在磁盘中，重启的时候可以再次加载进行使用。
@@ -15,7 +16,7 @@ import (
 // 丰富的特性
 
 func connectRedis() (conn redis.Conn) {
-	conn, err := redis.Dial("tcp", "localhost:6379")
+	conn, err := redis.Dial("tcp", "localhost:56378")
 	if err != nil {
 		fmt.Println("conn redis failed,", err)
 	}
@@ -28,23 +29,23 @@ func operateString() {
 	conn := connectRedis()
 
 	// set key value
-	// _, err := conn.Do("Set", "key1", "value1")
+	_, err := conn.Do("Set", "key1", "value1")
 	// _, err := conn.Do("Set", "key2", 222)
-	// if err != nil {
-	// 	fmt.Println("set err ", err)
-	// 	conn.Close()
-	// 	return
-	// }
+	if err != nil {
+		fmt.Println("set err ", err)
+		conn.Close()
+		return
+	}
 
 	// get key
-	// reply, err := conn.Do("Get", "key1")   // 返回的reply类型为interface{} -> 且是[]byte类型
-	// if err != nil {
-	// 	fmt.Println("get key1 failed,", err)
-	// 	conn.Close()
-	// 	return
-	// }
-	// fmt.Printf("type is %T\nvalue is %v\n", reply, reply)
-	// fmt.Println("get value is", string(reply.([]byte)))       // interface{}类型 断言转成[]byte类型，再转成string
+	reply, err := conn.Do("Get", "key1") // 返回的reply类型为interface{} -> 且是[]byte类型
+	if err != nil {
+		fmt.Println("get key1 failed,", err)
+		conn.Close()
+		return
+	}
+	fmt.Printf("type is %T\nvalue is %v\n", reply, reply)
+	fmt.Println("get value is", string(reply.([]byte))) // interface{}类型 断言转成[]byte类型，再转成string
 
 	// 直接使用封装好的进行转换  redis.String/Int/
 	// value, _ := redis.String(conn.Do("Get", "key1"))
@@ -61,11 +62,11 @@ func operateString() {
 	// fmt.Println(stringArr)
 
 	// mget 获取不同类型的值，返回[]interface{}
-	valueArr, _ := redis.Values(conn.Do("MGet", "name", "age"))
-	for _, v := range valueArr {
-		// v 的类型为 []byte
-		fmt.Println(string(v.([]byte)))
-	}
+	// valueArr, _ := redis.Values(conn.Do("MGet", "name", "age"))
+	// for _, v := range valueArr {
+	// 	// v 的类型为 []byte
+	// 	fmt.Println(string(v.([]byte)))
+	// }
 
 	// 设置过期时间
 	// conn.Do("expire", "k", 10)
@@ -151,8 +152,8 @@ func redisPool() {
 }
 
 func main() {
-	// operateString()
+	operateString()
 	// operateList()
 	// operateHash()
-	redisPool()
+	// redisPool()
 }

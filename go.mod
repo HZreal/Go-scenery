@@ -7,10 +7,11 @@ require (
 	github.com/atotto/clipboard v0.1.4
 	github.com/bwmarrin/snowflake v0.3.0
 	github.com/code-elastic/open-api-client-sdk-go v0.4.0
-	github.com/garyburd/redigo v1.6.4
 	github.com/go-ini/ini v1.67.0
 	github.com/go-sql-driver/mysql v1.7.0
 	github.com/golang-module/carbon/v2 v2.2.8
+	github.com/gomodule/redigo v1.9.2
+	github.com/google/uuid v1.3.1
 	github.com/google/wire v0.6.0
 	github.com/gorilla/mux v1.8.0
 	github.com/gorilla/websocket v1.5.0
@@ -22,12 +23,14 @@ require (
 	github.com/minio/minio-go/v7 v7.0.63
 	github.com/olivere/elastic v6.2.37+incompatible
 	github.com/qianlnk/pgbar v0.0.0-20210208085217-8c19b9f2477e
+	github.com/redis/go-redis/v9 v9.2.1
 	github.com/samber/lo v1.38.1
 	github.com/samuel/go-zookeeper v0.0.0-20201211165307-7117e9ea2414
 	github.com/satori/go.uuid v1.2.0
 	github.com/sony/sonyflake v1.2.0
 	github.com/teris-io/shortid v0.0.0-20220617161101-71ec9f2aa569
 	go.etcd.io/etcd/client/v3 v3.5.7
+	golang.org/x/net v0.20.0
 	gorm.io/driver/mysql v1.4.7
 	gorm.io/gorm v1.24.6
 )
@@ -46,7 +49,6 @@ require (
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
-	github.com/google/uuid v1.3.1 // indirect
 	github.com/hashicorp/errwrap v1.0.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/hashicorp/go-uuid v1.0.3 // indirect
@@ -70,7 +72,6 @@ require (
 	github.com/pkg/errors v0.8.1 // indirect
 	github.com/qianlnk/to v0.0.0-20191230085244-91e712717368 // indirect
 	github.com/rcrowley/go-metrics v0.0.0-20201227073835-cf1acfcdf475 // indirect
-	github.com/redis/go-redis/v9 v9.2.1 // indirect
 	github.com/robfig/cron/v3 v3.0.1 // indirect
 	github.com/rs/xid v1.5.0 // indirect
 	github.com/sirupsen/logrus v1.9.3 // indirect
@@ -82,7 +83,6 @@ require (
 	go.uber.org/zap v1.17.0 // indirect
 	golang.org/x/crypto v0.18.0 // indirect
 	golang.org/x/exp v0.0.0-20220303212507-bbda1eaf7a17 // indirect
-	golang.org/x/net v0.20.0 // indirect
 	golang.org/x/sys v0.16.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	golang.org/x/time v0.3.0 // indirect
