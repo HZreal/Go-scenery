@@ -35,6 +35,16 @@ func dataType() {
 	// float32 的浮点数的最大范围约为3.4e38，可以使用常量定义：math.MaxFloat32。
 	// float64 的浮点数的最大范围约为 1.8e308，可以使用一个常量定义：math.MaxFloat64。
 
+	// 值类型包括：
+	// 		基本数据类型：int float string bool
+	// 		数组 Array
+	// 		结构体 struct
+	// 引用类型包括：
+	// 		slice
+	// 		map
+	// 		channel
+	// 		interface
+	// 		point
 }
 
 // 定义变量
@@ -222,7 +232,7 @@ func exitsProgram() {
 }
 func checkChannelIsBlocked() {
 	ch := make(chan int, 5)
-	//...
+	// ...
 	data := 0
 	select {
 	case ch <- data: // 尝试向管道发数据，成功则执行case，表示管道未满
