@@ -3,10 +3,12 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"github.com/samber/lo"
 	"io"
 	"io/ioutil"
 	"log"
 	"os"
+	"path/filepath"
 )
 
 var filename1 = "builtinLib/123.txt"
@@ -117,8 +119,73 @@ func useOSToWrite() {
 
 }
 
+// ///////////////////////////////////////////////////////////////////////////////////////
+
+func walkDir(dir string) error {
+	return filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+
+		fmt.Println("-------", path, info.Name(), info.IsDir(), info.Size(), info.ModTime(), info.Mode(), info.Sys())
+
+		if info.IsDir() {
+			fmt.Printf("目录: %s\n", path)
+		} else {
+			fmt.Printf("文件: %s\n", path)
+		}
+
+		return nil
+	})
+}
+
+func testWalk() {
+	dir := "./concurrence" // 当前目录，你可以替换为任意目录路径
+
+	err := walkDir(dir)
+	if err != nil {
+		fmt.Printf("遍历目录时出错: %v\n", err)
+	}
+}
+
+/*
+*	给定目录，找到所有的 git 仓库（即包含 .git 文件夹的目录）
+ */
+func case1(root string) {
+	var result []string
+	whiteList := []string{"vendor", "node_modules"}
+	_ = filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+
+		//
+		if !info.IsDir() {
+			return nil
+		}
+
+		//
+		if lo.Contains(whiteList, info.Name()) {
+			return filepath.SkipDir
+		}
+
+		//
+		if info.Name() == ".git" {
+			result = append(result, path)
+			fmt.Println("path  ---->  ", filepath.Dir(path))
+		}
+
+		return nil
+	})
+	fmt.Println("result ----> ", result)
+
+}
+
 func main() {
 	// useIOUtilToRW()
 	// useOSToRead()
-	useOSToWrite()
+	// useOSToWrite()
+
+	// testWalk()
+	case1("/Users/huang/overall/project")
 }
