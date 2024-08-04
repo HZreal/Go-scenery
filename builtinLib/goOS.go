@@ -1,14 +1,12 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"github.com/kardianos/osext"
 	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
-	"runtime"
 	"strings"
 )
 
@@ -16,12 +14,6 @@ func checkErr(err error) {
 	if err != nil {
 		panic(err)
 	}
-}
-
-func getWd() {
-	path, err := os.Getwd()
-	checkErr(err)
-	fmt.Println(path)
 }
 
 // 获取当前的执行路径
@@ -43,17 +35,6 @@ func getCurrentPath1() {
 	i := strings.LastIndex(str, "\\") // 仅windows
 	path := string(str[0 : i+1])
 	fmt.Println(path)
-}
-
-// 获取当前文件的详细路径
-func CurrentFile() {
-	_, file, _, ok := runtime.Caller(1) // 不要放在main函数里调用
-	if !ok {
-		panic(errors.New("Can not get current file info"))
-	}
-	fmt.Println("filePath ---->  ", file)
-	dir := filepath.Dir(file)
-	fmt.Println("dirPath ---->  ", dir)
 }
 
 func getExecutingFIlePath1() {
@@ -78,15 +59,9 @@ func getExecutingFIlePath2() {
 }
 
 func main() {
-	// getWd()
 
 	// getCurrentPath()
 	// getCurrentPath1()
-
-	CurrentFile()
-
-	// _, file, _, _ := runtime.Caller(1) // 在main函数中调用，返回执行时路径
-	// fmt.Println(file)                  // 输出/Users/hz/Desktop/hz/goSDK/go1.17.11/src/runtime/proc.go
 
 	// getExecutingFIlePath1()
 

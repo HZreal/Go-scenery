@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"github.com/samber/lo"
 	"io"
@@ -9,10 +10,50 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"runtime"
 )
 
-var filename1 = "builtinLib/123.txt"
-var filename2 = "builtinLib/456.txt"
+var (
+	filename1 = "builtinLib/123.txt"
+	filename2 = "builtinLib/456.txt"
+)
+
+// 获取工作路径
+func getWorkDir() {
+	workDir, err := os.Getwd()
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("workDir  ---->  ", workDir)
+}
+
+// 获取当前文件的详细路径
+func CurrentFile() {
+	// 获取当前文件所在路径
+	// _, file, _, ok := runtime.Caller(0) // 不要放在main函数里调用
+	_, filePath, _, ok := runtime.Caller(1)
+	if !ok {
+		panic(errors.New("Can not get current file info"))
+	}
+	fmt.Println("filePath ---->  ", filePath)
+
+	// 获取文件名所在目录
+	dirPath := filepath.Dir(filePath)
+	fmt.Println("dirPath ---->  ", dirPath)
+
+	// 获取文件名（带扩展名）
+	fileBase := filepath.Base(filePath)
+	fmt.Println("fileBase  ---->  ", fileBase)
+
+	// 获取文件扩展名
+	fileExt := filepath.Ext(filePath)
+	fmt.Println("fileExt  ---->  ", fileExt)
+
+	// 获取不带扩展名的文件名
+	fileNameWithoutExt := fileBase[:len(fileBase)-len(fileExt)]
+	fmt.Println("fileNameWithoutExt  ---->  ", fileNameWithoutExt)
+
+}
 
 func useIOUtilToRW() {
 
@@ -182,10 +223,17 @@ func case1(root string) {
 }
 
 func main() {
+	getWorkDir()
+
+	CurrentFile()
+
+	// _, file, _, _ := runtime.Caller(1) // 在main函数中调用，返回执行时路径
+	// fmt.Println(file)                  // 输出/Users/hz/Desktop/hz/goSDK/go1.17.11/src/runtime/proc.go
+
 	// useIOUtilToRW()
 	// useOSToRead()
 	// useOSToWrite()
 
 	// testWalk()
-	case1("/Users/huang/overall/project")
+	// case1("/Users/huang/overall/project")
 }
