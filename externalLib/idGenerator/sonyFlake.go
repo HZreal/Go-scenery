@@ -7,7 +7,7 @@ import (
 )
 
 /**
-sony flake
+sony flake: distributed unique ID generator inspired by Twitter's Snowflake
 github: https://github.com/sony/sonyflake
 */
 

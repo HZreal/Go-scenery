@@ -8,7 +8,7 @@ import (
 	"goScenery/externalLib/asynq/tasks"
 )
 
-const redisAddr = "10.211.55.4:6379"
+const redisAddr = "127.0.0.1:56378"
 
 func main() {
 	client := asynq.NewClient(asynq.RedisClientOpt{Addr: redisAddr})
