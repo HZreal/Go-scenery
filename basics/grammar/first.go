@@ -256,6 +256,9 @@ func ifCondition() {
 	// }
 
 	// switch 基本使用
+	// switch 语句的条件表达式可以是任意类型的，甚至可以是接口类型。
+	// 一个 case 中可以有多个结果选项，用逗号分隔
+	// 在 case 语句体执行完后，会自动退出(默认 break 了)，不需要显式使用 break 语句 ，并且不会自动贯穿到下一个 case，除非使用 fallthrough 关键字
 	// var marks = 90
 	// var grade string = "D"
 	// switch marks {
