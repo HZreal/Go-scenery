@@ -363,7 +363,7 @@ func testNoBufferChannelDeadlock() {
 
 	for data := range ch {
 		// 无限监听接收通道，接收到两次数据后就发生死锁
-		// 原因是这里继续监听
+		// 原因是这里继续监听，但不再有通道写入操作
 		fmt.Println(data)
 	}
 }
