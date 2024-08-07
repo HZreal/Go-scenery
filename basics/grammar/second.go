@@ -354,6 +354,21 @@ func pointArr() {
 }
 
 // 无缓冲通道的死锁情况
+func testNoBufferChannelDeadlock() {
+	ch := make(chan string)
+	go func() {
+		ch <- "hello"
+		ch <- "world"
+	}()
+
+	for data := range ch {
+		// 无限监听接收通道，接收到两次数据后就发生死锁
+		// 原因是这里继续监听
+		fmt.Println(data)
+	}
+}
+
+// 有缓冲通道的死锁情况
 func testBufferChannelDeadlock() {
 	c := make(chan string, 1) // 容量为 1 的有缓冲通道
 	c <- "hello"
@@ -539,6 +554,9 @@ func channelBasics() {
 	// ！！！无缓冲通道上的发送操作会阻塞，直到另一个goroutine在该通道上执行接收操作，这时值才能发送成功，两个goroutine将继续执行。相反，如果接收操作先执行，接收方的goroutine将阻塞，直到另一个goroutine在该通道上发送一个值
 	// 使用无缓冲通道进行通信将导致发送和接收的goroutine同步化。因此，无缓冲通道也被称为同步通道。
 
+	// 无缓冲通道的一个死锁案例
+	testNoBufferChannelDeadlock()
+
 	// 1.1.6. 有缓冲的通道
 	// 解决上面问题的方法还有一种就是使用有缓冲区的通道
 	// 可以在使用make函数初始化通道的时候为其指定通道的容量，即创建有缓冲的通道
@@ -549,7 +567,7 @@ func channelBasics() {
 	// fmt.Println("发送成功")
 
 	// 有缓冲通道的死锁情况
-	testBufferChannelDeadlock()
+	// testBufferChannelDeadlock()
 
 	// 1.1.7. close()
 	// 通过内置的close()函数关闭channel
