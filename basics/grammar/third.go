@@ -31,6 +31,7 @@ func newBook(title string, bookId int, author string, publicDate string, desc st
 }
 
 // 方法Method定义(方法与函数的区别是：函数不属于任何类型，方法属于特定的类型)
+// !!! 定义方法必须指定方法的接收者。方法的接收者可以是内置类型、自定义结构体，不能是指针（比如：&p）
 func (b Book) getPublicDate() string {
 	fmt.Println(b.publicDate)
 	return b.publicDate
