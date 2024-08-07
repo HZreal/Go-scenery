@@ -724,6 +724,31 @@ func panicRecoverBasics() {
 
 	}
 
+	// 错误(error)和异常(exception)
+	// 错误是程序(比如一个函数)运行的预期结果之一，当你调用一个函数时，就应该处理出现错误的情况
+	// 而异常是不可预期的(当然也可以手动触发)且会导致程序中断运行的严重错误。
+	// Go语言中，一般推荐通过函数的最后一个返回值告诉调用者函数是否执行成功
+	// func Foo() (result Type, err error) {
+	// 	if somethingWentWrong {
+	// 		return Type{}, errors.New("something went wrong")
+	// 	}
+	// 	return result, nil
+	// }
+	// 创建错误的几种方式：
+	// 		1. errors.New("xxx error!")
+	// 		2. fmt.Errorf("userId=%d not found", 1)
+	// 		3. 自定义错误（见下）
+	// 如何处理错误？
+	// 		在执行时遇到错误，可以直接返回给上层调用者
+	// 		如果不影响程序运行，可以记录日志并继续运行
+	// 		如果影响程序执行，可以记录日志后，退出程序执行
+
+	// panic 怎么触发？
+	// 一般是如数组越界等不可预测的异常会自动触发 panic，也可以手动调用 panic 函数触发，出现异常会终止程序的运行
+	// 一般不要主动调用 panic 函数，尤其是开发类库的时候，最好通过返回 error 类型来告诉调用者发生了什么错误，而不是触发 panic 导致程序终止运行。
+	// 可以用 defer 语句和 recover 函数的模式来捕获 panic 异常
+
+	// 简言之，调用函数时，错误是执行的结果，应该及时处理，而异常往往不可控，可以用 defer + recover 的模式进行捕获
 }
 
 // 单元测试
