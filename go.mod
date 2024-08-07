@@ -23,6 +23,7 @@ require (
 	github.com/kardianos/osext v0.0.0-20190222173326-2bc1f35cddc0
 	github.com/minio/minio-go/v7 v7.0.63
 	github.com/olivere/elastic v6.2.37+incompatible
+	github.com/prashantv/gostub v1.1.0
 	github.com/qianlnk/pgbar v0.0.0-20210208085217-8c19b9f2477e
 	github.com/redis/go-redis/v9 v9.2.1
 	github.com/samber/lo v1.38.1
