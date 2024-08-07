@@ -72,3 +72,51 @@ func removeElement2(nums []int, val int) int {
 	}
 	return left
 }
+
+/**
+ * leetcode: https://leetcode.cn/problems/squares-of-a-sorted-array/
+ *
+ */
+func sortedSquares(arr []int) []int {
+	left, right := 0, len(arr)-1
+	var res []int
+	for left <= right {
+		leftLeft := arr[left] * arr[left]
+		rightRight := arr[right] * arr[right]
+		if leftLeft <= rightRight {
+			//
+			res = append(res, rightRight)
+			right--
+		} else {
+			//
+			res = append(res, leftLeft)
+			left++
+		}
+	}
+
+	// return reverse(res) // 自己实现逆转
+	// return lo.Reverse(res)
+
+	// 第 2 种遍历方式
+	res2 := make([]int, len(arr))
+	for i := len(arr) - 1; i >= 0; i-- {
+
+		leftLeft := arr[left] * arr[left]
+		rightRight := arr[right] * arr[right]
+
+		if leftLeft <= rightRight {
+			res2[i] = rightRight
+			right--
+		} else {
+			res2[i] = leftLeft
+			left++
+		}
+	}
+
+	return res2
+}
+
+func reverse(arr []int) []int {
+	//
+	return []int{}
+}
