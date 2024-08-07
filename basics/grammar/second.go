@@ -353,12 +353,6 @@ func pointArr() {
 	}
 }
 
-// 接收通道数据的goroutine
-func recv(c chan int) {
-	ret := <-c
-	fmt.Println("接收成功", ret)
-}
-
 // 关闭通道
 func testChannelClose() {
 	c := make(chan int)
@@ -520,16 +514,20 @@ func channelBasics() {
 	// close(ch)
 
 	// 1.1.5. 无缓冲的通道，又称为阻塞的通道
-	// ch := make(chan int)             // 未指定容量，默认是创建无缓冲通道
+	// ch := make(chan int) // 未指定容量，默认是创建无缓冲通道
 	// ch <- 10
-	// fmt.Println("发送成功")
+	// fmt.Println("接收数据", <-ch)
 	// 上面这3行代码能够通过编译，但是会阻塞在ch <- 10这一行代码形成死锁，执行报错fatal error: all goroutines are asleep - deadlock!  原因是：我们使用ch := make(chan int)创建的是无缓冲的通道，而
 	// 无缓冲的通道只有在有人接收值的时候才能发送值。就像你住的小区没有快递柜和代收点，快递员给你打电话必须要把这个物品送到你的手中，简单来说就是无缓冲的通道必须有接收才能发送
 	// 解决方法一：启用一个goroutine去接收值
-	// ch := make(chan int)
-	// go recv(ch)                     // 启用goroutine从通道接收值
-	// ch <- 10
-	// fmt.Println("发送成功")
+	ch := make(chan int)
+	go func(c chan int) {
+		// 启用goroutine从通道接收值
+		ret := <-c
+		fmt.Println("接收成功", ret)
+	}(ch)
+	ch <- 10
+	fmt.Println("发送成功")
 	// ！！！无缓冲通道上的发送操作会阻塞，直到另一个goroutine在该通道上执行接收操作，这时值才能发送成功，两个goroutine将继续执行。相反，如果接收操作先执行，接收方的goroutine将阻塞，直到另一个goroutine在该通道上发送一个值
 	// 使用无缓冲通道进行通信将导致发送和接收的goroutine同步化。因此，无缓冲通道也被称为同步通道。
 
