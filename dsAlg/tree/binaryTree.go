@@ -64,9 +64,9 @@ func midOrderTraversal(tree *TreeNode, result *[]string) {
 		return
 	}
 
-	preOrderTraversal(tree.Left, result)
+	midOrderTraversal(tree.Left, result)
 	*result = append(*result, tree.Data)
-	preOrderTraversal(tree.Right, result)
+	midOrderTraversal(tree.Right, result)
 }
 
 // 后序遍历：先访问左子树，再访问右子树，最后访问根节点。
@@ -75,8 +75,8 @@ func postOrderTraversal(tree *TreeNode, result *[]string) {
 		return
 	}
 
-	preOrderTraversal(tree.Left, result)
-	preOrderTraversal(tree.Right, result)
+	postOrderTraversal(tree.Left, result)
+	postOrderTraversal(tree.Right, result)
 	*result = append(*result, tree.Data)
 }
 
