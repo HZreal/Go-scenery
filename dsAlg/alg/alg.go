@@ -195,3 +195,56 @@ func max(x, y int) int {
 	}
 	return x
 }
+
+/**
+ * 反转链表
+ * https://leetcode.cn/problems/reverse-linked-list/description/
+ */
+
+type LinkedNode struct {
+	Val  int
+	Next *LinkedNode
+}
+
+func reverseLinkedList(head *LinkedNode) *LinkedNode {
+	// 定义一个节点，用于存储遍历到 curr 时的上一个节点
+	var prev *LinkedNode
+	curr := head
+	for curr != nil {
+		// 暂存 next 节点
+		next := curr.Next
+		// 修改当前节点的 next 指针
+		curr.Next = prev
+		// 更新 prev，用于下次迭代
+		prev = curr
+		// 更新当前节点
+		curr = next
+	}
+	return prev
+}
+
+func testReverseLinkedList(arr []int) (res []int) {
+	// 数组转单链表
+	if len(arr) == 0 {
+		return res
+	}
+
+	head := &LinkedNode{Val: arr[0]}
+	current := head
+	for i := 1; i < len(arr); i++ {
+		current.Next = &LinkedNode{Val: arr[i]}
+		current = current.Next
+	}
+
+	// 反转单链表测试
+	newHead := reverseLinkedList(head)
+
+	// 将反转后的单链表转成数组
+	current2 := newHead
+	for current2 != nil {
+		res = append(res, current2.Val)
+		current2 = current2.Next
+	}
+
+	return res
+}
