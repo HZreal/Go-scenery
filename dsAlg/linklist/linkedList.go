@@ -34,6 +34,15 @@ type LinkNode struct {
 	Next *LinkNode
 }
 
+// 遍历单链表
+func traverseLinkedList(head *LinkNode) {
+	node := head
+	for node != nil {
+		fmt.Println("node.Data  ---->  ", node.Data)
+		node = node.Next
+	}
+}
+
 func test1() {
 	node1 := new(LinkNode)
 	node1.Data = 1
@@ -42,19 +51,10 @@ func test1() {
 	node2.Data = 2
 	node1.Next = node2
 
-	node3 := LinkNode{Data: 3}
-	node2.Next = &node3
+	node3 := &LinkNode{Data: 3}
+	node2.Next = node3
 
-	nowNode := node1
-	for {
-		if nowNode != nil {
-			fmt.Printf("%T  ", nowNode)
-			fmt.Println("nowNode.Data = ", nowNode.Data)
-			nowNode = nowNode.Next
-			continue
-		}
-		break
-	}
+	traverseLinkedList(node1)
 }
 
 // //////////////////////////////////////////////////////////////
@@ -232,8 +232,8 @@ func ArrayLink() {
 }
 
 func main() {
-	// test1()
+	test1()
 	// test2()
-	NewNRings(3)
-	linkNewTest()
+	// NewNRings(3)
+	// linkNewTest()
 }
