@@ -26,6 +26,7 @@ require (
 	github.com/prashantv/gostub v1.1.0
 	github.com/qianlnk/pgbar v0.0.0-20210208085217-8c19b9f2477e
 	github.com/redis/go-redis/v9 v9.2.1
+	github.com/robfig/cron/v3 v3.0.1
 	github.com/samber/lo v1.38.1
 	github.com/samuel/go-zookeeper v0.0.0-20201211165307-7117e9ea2414
 	github.com/satori/go.uuid v1.2.0
@@ -78,7 +79,6 @@ require (
 	github.com/pkg/errors v0.8.1 // indirect
 	github.com/qianlnk/to v0.0.0-20191230085244-91e712717368 // indirect
 	github.com/rcrowley/go-metrics v0.0.0-20201227073835-cf1acfcdf475 // indirect
-	github.com/robfig/cron/v3 v3.0.1 // indirect
 	github.com/rs/xid v1.5.0 // indirect
 	github.com/sirupsen/logrus v1.9.3 // indirect
 	github.com/spf13/cast v1.5.1 // indirect
