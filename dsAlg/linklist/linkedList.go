@@ -43,6 +43,37 @@ func traverseLinkedList(head *LinkNode) {
 	}
 }
 
+// 数组转单链表
+func arrayToLinkedList(arr []int8) *LinkNode {
+	if len(arr) == 0 {
+		return nil
+	}
+
+	head := &LinkNode{Data: arr[0]}
+	current := head
+	for i := 1; i < len(arr); i++ {
+		current.Next = &LinkNode{Data: arr[i]}
+		current = current.Next
+	}
+
+	return head
+}
+
+// 单链表转数组
+func linkedListToArray(head *LinkNode) (res []int8) {
+	if head == nil {
+		return res
+	}
+
+	current := head
+	for current != nil {
+		res = append(res, current.Data)
+		current = current.Next
+	}
+
+	return res
+}
+
 func test1() {
 	node1 := new(LinkNode)
 	node1.Data = 1
@@ -55,6 +86,14 @@ func test1() {
 	node2.Next = node3
 
 	traverseLinkedList(node1)
+
+	arr1 := linkedListToArray(node1)
+	fmt.Println("arr1  ---->  ", arr1)
+
+	root := arrayToLinkedList(arr1)
+	fmt.Println("root  ---->  ", root)
+	traverseLinkedList(root)
+
 }
 
 // //////////////////////////////////////////////////////////////
