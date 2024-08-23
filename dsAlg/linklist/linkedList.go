@@ -30,7 +30,7 @@ import (
 // TODO 查看源码 container/list container/ring container/heap 包
 
 type LinkNode struct {
-	Data int8
+	Data int
 	Next *LinkNode
 }
 
@@ -43,8 +43,8 @@ func traverseLinkedList(head *LinkNode) {
 	}
 }
 
-// 数组转单链表
-func arrayToLinkedList(arr []int8) *LinkNode {
+// ArrayToLinkedList 数组转单链表
+func ArrayToLinkedList(arr []int) *LinkNode {
 	if len(arr) == 0 {
 		return nil
 	}
@@ -59,8 +59,8 @@ func arrayToLinkedList(arr []int8) *LinkNode {
 	return head
 }
 
-// 单链表转数组
-func linkedListToArray(head *LinkNode) (res []int8) {
+// LinkedListToArray 单链表转数组
+func LinkedListToArray(head *LinkNode) (res []int) {
 	if head == nil {
 		return res
 	}
@@ -87,10 +87,10 @@ func test1() {
 
 	traverseLinkedList(node1)
 
-	arr1 := linkedListToArray(node1)
+	arr1 := LinkedListToArray(node1)
 	fmt.Println("arr1  ---->  ", arr1)
 
-	root := arrayToLinkedList(arr1)
+	root := ArrayToLinkedList(arr1)
 	fmt.Println("root  ---->  ", root)
 	traverseLinkedList(root)
 
