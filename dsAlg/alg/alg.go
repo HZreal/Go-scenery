@@ -249,7 +249,6 @@ func testReverseLinkedList(arr []int) (res []int) {
 		res = append(res, current2.Val)
 		current2 = current2.Next
 	}
-	fmt.Print()
 
 	return res
 }
