@@ -128,3 +128,21 @@ func Test_testReverseLinkedList(t *testing.T) {
 		})
 	}
 }
+
+func Test_testLRUCache(t *testing.T) {
+	type args struct {
+		cap int
+	}
+	tests := []struct {
+		name string
+		args args
+	}{
+		// TODO: Add test cases.
+		{"case1", args{cap: 2}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			testLRUCache(tt.args.cap)
+		})
+	}
+}

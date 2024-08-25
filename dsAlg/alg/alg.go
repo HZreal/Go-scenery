@@ -7,6 +7,10 @@ package alg
  * @Description:
  */
 
+import (
+	"fmt"
+)
+
 /*
  * 二分查找
  * 双指针
@@ -245,6 +249,130 @@ func testReverseLinkedList(arr []int) (res []int) {
 		res = append(res, current2.Val)
 		current2 = current2.Next
 	}
+	fmt.Print()
 
 	return res
+}
+
+/**
+ * LRU 缓存
+ * https://leetcode.cn/problems/lru-cache/
+ */
+
+// DLinkedNode 节点
+type DLinkedNode struct {
+	key, value int
+	prev, next *DLinkedNode
+}
+
+func NewDLinkedNode(key, value int) *DLinkedNode {
+	return &DLinkedNode{
+		key:   key,
+		value: value,
+	}
+}
+
+// LRUCache LRU 结构体
+type LRUCache struct {
+	size     int
+	capacity int
+	cache    map[int]*DLinkedNode
+	// head, tail 指向双向链表的头部和尾部虚拟节点，不直接存储数据节点，用于简化边界操作，可以避免处理空指针的特殊情况
+	head, tail *DLinkedNode
+}
+
+func NewLRUCache(cap int) *LRUCache {
+	l := &LRUCache{
+		capacity: cap,
+		cache:    make(map[int]*DLinkedNode),
+		// cache: map[int]*DLinkedNode{},
+		head: NewDLinkedNode(0, 0),
+		tail: NewDLinkedNode(0, 0),
+	}
+	l.head.next = l.tail
+	l.tail.prev = l.head
+	return l
+}
+
+// Get 查询某个 key
+func (l *LRUCache) Get(key int) int {
+	if _, ok := l.cache[key]; !ok {
+		return -1
+	}
+
+	node := l.cache[key]
+	l.moveToHead(node)
+	return node.value
+}
+
+// Put 添加设置某节点
+func (l *LRUCache) Put(key, value int) {
+	if _, ok := l.cache[key]; !ok {
+		// key 不存在
+		node := NewDLinkedNode(key, value)
+		l.cache[key] = node
+		l.addToHead(node)
+		l.size++
+
+		if l.size > l.capacity {
+			// 删除 map 中的尾节点
+			removedNode := l.removeTail()
+			delete(l.cache, removedNode.key)
+
+			l.size--
+		}
+
+	} else {
+		// key 存在
+		node := l.cache[key]
+		node.value = value
+		l.moveToHead(node)
+	}
+}
+
+// 节点移到头部
+func (l *LRUCache) moveToHead(node *DLinkedNode) {
+	l.removeNode(node)
+	l.addToHead(node)
+}
+
+// 移除节点
+func (l *LRUCache) removeNode(node *DLinkedNode) {
+	node.prev.next = node.next
+	node.next.prev = node.prev
+}
+
+// 添加节点到头部
+func (l *LRUCache) addToHead(node *DLinkedNode) {
+	// 暂存当前的第一个数据节点
+	first := l.head.next
+	//
+	first.prev = node
+	//
+	node.next = first
+	node.prev = l.head
+	//
+	l.head.next = node
+}
+
+// 移除尾节点
+func (l *LRUCache) removeTail() *DLinkedNode {
+	node := l.tail.prev
+	l.removeNode(node)
+	return node
+}
+
+func testLRUCache(cap int) {
+	lru := NewLRUCache(cap) // 创建一个容量为2的LRU缓存
+	lru.Put(1, 1)
+	lru.Put(2, 2)
+	fmt.Printf("111. lru.head.netx.key: %d, lru.head.next.value: %d\n", lru.head.next.key, lru.head.next.value)
+	fmt.Println(lru.Get(1)) // 返回 1，且该节点移到头部
+	fmt.Printf("222. lru.head.netx.key: %d, lru.head.next.value: %d\n", lru.head.next.key, lru.head.next.value)
+	lru.Put(3, 3)           // 该操作会使尾节点的键 2 作废
+	fmt.Println(lru.Get(2)) // 返回 -1 (未找到)
+	lru.Put(4, 4)           // 该操作会使得键 1 作废
+	fmt.Println(lru.Get(1)) // 返回 -1 (未找到)
+	fmt.Println(lru.Get(3)) // 返回 3
+	fmt.Println(lru.Get(4)) // 返回 4
 }
