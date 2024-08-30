@@ -59,8 +59,19 @@ func sliceTest2() {
 }
 
 // ////////////////////////////////////////////////////////////////////////////////////
+func sliceTest3() {
+	str1 := []string{"a", "b", "c"}
+	str2 := str1[1:]
+	str2[1] = "new"
+	fmt.Println(str1)                  // 共用底层数组，修改了str2，str1 也会受影响
+	str2 = append(str2, "z", "x", "y") // append 导致底层数组扩容，str2 引用新数组，而 str1 还是引用旧数组
+	fmt.Println(str1, str2)
+}
+
+// ////////////////////////////////////////////////////////////////////////////////////
 
 func main() {
 	// sliceTest1()
-	sliceTest2()
+	// sliceTest2()
+	sliceTest3()
 }
