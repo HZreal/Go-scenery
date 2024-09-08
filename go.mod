@@ -22,6 +22,7 @@ require (
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/kardianos/osext v0.0.0-20190222173326-2bc1f35cddc0
 	github.com/minio/minio-go/v7 v7.0.63
+	github.com/natefinch/lumberjack v2.0.0+incompatible
 	github.com/olivere/elastic v6.2.37+incompatible
 	github.com/prashantv/gostub v1.1.0
 	github.com/qianlnk/pgbar v0.0.0-20210208085217-8c19b9f2477e
@@ -33,6 +34,7 @@ require (
 	github.com/sony/sonyflake v1.2.0
 	github.com/teris-io/shortid v0.0.0-20220617161101-71ec9f2aa569
 	go.etcd.io/etcd/client/v3 v3.5.7
+	go.uber.org/zap v1.17.0
 	golang.org/x/net v0.20.0
 	gorm.io/driver/mysql v1.4.7
 	gorm.io/driver/postgres v1.5.9
@@ -86,7 +88,6 @@ require (
 	go.etcd.io/etcd/client/pkg/v3 v3.5.7 // indirect
 	go.uber.org/atomic v1.7.0 // indirect
 	go.uber.org/multierr v1.6.0 // indirect
-	go.uber.org/zap v1.17.0 // indirect
 	golang.org/x/crypto v0.18.0 // indirect
 	golang.org/x/exp v0.0.0-20220303212507-bbda1eaf7a17 // indirect
 	golang.org/x/sync v0.6.0 // indirect
@@ -98,5 +99,6 @@ require (
 	google.golang.org/protobuf v1.31.0 // indirect
 	gopkg.in/fsnotify.v1 v1.4.7 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
+	gopkg.in/natefinch/lumberjack.v2 v2.2.1 // indirect
 	gopkg.in/tomb.v1 v1.0.0-20141024135613-dd632973f1e7 // indirect
 )
