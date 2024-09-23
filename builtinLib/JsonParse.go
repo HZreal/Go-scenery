@@ -29,7 +29,7 @@ func JsonMarshall() {
 		{"key1": "value1", "key2": "value1"},
 	}
 	byteArr2, _ := json.Marshal(_map)
-	//fmt.Println("byteArr2---------", byteArr2, len(byteArr2))
+	// fmt.Println("byteArr2---------", byteArr2, len(byteArr2))
 	str2 := string(byteArr2) // []byte 转 string
 	fmt.Println("str2---------", str2)
 
@@ -82,6 +82,42 @@ func JsonUnmarshall() {
 
 }
 
+// ////////////////////////////////////////////////////////////////////////////
+func marshalStringToJsonString() {
+	// Go 中的一个普通字符串
+	str := "Hello, World!"
+
+	// 序列化为 JSON 格式的字符串
+	jsonData, err := json.Marshal(str)
+	if err != nil {
+		fmt.Println("序列化错误:", err)
+		return
+	}
+
+	// 输出 JSON 字符串
+	fmt.Println(string(jsonData)) // 输出："Hello, World!"
+}
+
+func unmarshalJsonStringToString() {
+	// JSON 格式的字符串（带引号）
+	jsonData := `"Hello, World!"`
+
+	// 定义一个 Go 的字符串变量
+	var str string
+
+	// 反序列化 JSON 字符串为 Go 字符串
+	err := json.Unmarshal([]byte(jsonData), &str)
+	if err != nil {
+		fmt.Println("反序列化错误:", err)
+		return
+	}
+
+	// 输出 Go 的字符串
+	fmt.Println(str) // 输出：Hello, World!
+}
+
+// ////////////////////////////////////////////////////////////////////////////
+
 // struct实现Unmarshaler接口, 便可以实现解析JSON的过程
 // UnmarshalJSON 自定义解析
 func (p *UserInfo) UnmarshalJSON(data []byte) error {
@@ -99,6 +135,9 @@ func (p *UserInfo) MarshalJSON() ([]byte, error) {
 }
 
 func main() {
-	//JsonMarshall()
-	JsonUnmarshall()
+	// JsonMarshall()
+	// JsonUnmarshall()
+
+	marshalStringToJsonString()
+	unmarshalJsonStringToString()
 }
