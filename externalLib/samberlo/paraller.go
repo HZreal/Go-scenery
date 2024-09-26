@@ -66,7 +66,26 @@ func t2() {
 	// []string{"1", "2", "3", "4"}
 
 }
+
+func taskGroupInBatch() {
+	// 假设有 100 个任务
+	tasks := make([]int, 100)
+	for i := 0; i < 100; i++ {
+		tasks[i] = i + 1 // 任务编号 1 到 100
+	}
+
+	// 使用 lo.Chunk 将任务分成每组 20 个
+	chunkedTasks := lo.Chunk(tasks, 20)
+
+	// 打印每一组任务
+	for i, group := range chunkedTasks {
+		fmt.Printf("第 %d 组任务: %v\n", i+1, group)
+	}
+}
+
 func main() {
-	t1()
+	// t1()
 	// t2()
+
+	taskGroupInBatch()
 }
