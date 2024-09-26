@@ -1,5 +1,12 @@
 package main
 
+/**
+ * @Author elastic·H
+ * @Date 2024-09-24
+ * @File: basic.go
+ * @Description:
+ */
+
 import (
 	"encoding/json"
 	"fmt"
@@ -82,62 +89,7 @@ func JsonUnmarshall() {
 
 }
 
-// ////////////////////////////////////////////////////////////////////////////
-func marshalStringToJsonString() {
-	// Go 中的一个普通字符串
-	str := "Hello, World!"
-
-	// 序列化为 JSON 格式的字符串
-	jsonData, err := json.Marshal(str)
-	if err != nil {
-		fmt.Println("序列化错误:", err)
-		return
-	}
-
-	// 输出 JSON 字符串
-	fmt.Println(string(jsonData)) // 输出："Hello, World!"
-}
-
-func unmarshalJsonStringToString() {
-	// JSON 格式的字符串（带引号）
-	jsonData := `"Hello, World!"`
-
-	// 定义一个 Go 的字符串变量
-	var str string
-
-	// 反序列化 JSON 字符串为 Go 字符串
-	err := json.Unmarshal([]byte(jsonData), &str)
-	if err != nil {
-		fmt.Println("反序列化错误:", err)
-		return
-	}
-
-	// 输出 Go 的字符串
-	fmt.Println(str) // 输出：Hello, World!
-}
-
-// ////////////////////////////////////////////////////////////////////////////
-
-// struct实现Unmarshaler接口, 便可以实现解析JSON的过程
-// UnmarshalJSON 自定义解析
-func (p *UserInfo) UnmarshalJSON(data []byte) error {
-	// 示例代码使用jsonitor代为解析
-	p.ID = 2
-	p.Age = 24
-	p.Name = "my_test_name"
-	return nil
-}
-
-// MarshalJSON 自定义编码
-func (p *UserInfo) MarshalJSON() ([]byte, error) {
-	// 自己编码json
-	return []byte(`{"test":"name_test"}`), nil
-}
-
 func main() {
-	// JsonMarshall()
-	// JsonUnmarshall()
-
-	marshalStringToJsonString()
-	unmarshalJsonStringToString()
+	JsonMarshall()
+	JsonUnmarshall()
 }
