@@ -7,6 +7,7 @@ require (
 	github.com/atotto/clipboard v0.1.4
 	github.com/bwmarrin/snowflake v0.3.0
 	github.com/code-elastic/open-api-client-sdk-go v0.4.0
+	github.com/fiorix/go-smpp v0.0.0-20210403173735-2894b96e70ba
 	github.com/go-ini/ini v1.67.0
 	github.com/go-sql-driver/mysql v1.7.0
 	github.com/golang-module/carbon/v2 v2.2.8
@@ -22,7 +23,6 @@ require (
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/kardianos/osext v0.0.0-20190222173326-2bc1f35cddc0
 	github.com/minio/minio-go/v7 v7.0.63
-	github.com/natefinch/lumberjack v2.0.0+incompatible
 	github.com/olivere/elastic v6.2.37+incompatible
 	github.com/prashantv/gostub v1.1.0
 	github.com/qianlnk/pgbar v0.0.0-20210208085217-8c19b9f2477e
@@ -36,6 +36,7 @@ require (
 	go.etcd.io/etcd/client/v3 v3.5.7
 	go.uber.org/zap v1.17.0
 	golang.org/x/net v0.20.0
+	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 	gorm.io/driver/mysql v1.4.7
 	gorm.io/driver/postgres v1.5.9
 	gorm.io/gorm v1.25.10
@@ -99,6 +100,5 @@ require (
 	google.golang.org/protobuf v1.31.0 // indirect
 	gopkg.in/fsnotify.v1 v1.4.7 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
-	gopkg.in/natefinch/lumberjack.v2 v2.2.1 // indirect
 	gopkg.in/tomb.v1 v1.0.0-20141024135613-dd632973f1e7 // indirect
 )
