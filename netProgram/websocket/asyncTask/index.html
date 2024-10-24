@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebSocket Client</title>
+</head>
+<body>
+<h1>WebSocket Client</h1>
+<button id="sendTaskButton">Send Task</button>
+
+<script>
+  // 创建 WebSocket 连接
+  const socket = new WebSocket("ws://localhost:52222/ws");
+
+  // 当 WebSocket 连接成功时触发
+  socket.onopen = function () {
+      console.log("WebSocket connection opened.");
+  };
+
+  // 当收到服务器的消息时触发
+  socket.onmessage = function (event) {
+      const taskInfo = JSON.parse(event.data);
+      console.log("Received task info:", taskInfo);
+
+      if (taskInfo.status === "completed") {
+          console.log("Task completed with result:", taskInfo.result);
+      }
+  };
+
+  // 监听 WebSocket 连接关闭事件
+  socket.onclose = function () {
+      console.log("WebSocket connection closed.");
+  };
+
+  // 监听 WebSocket 错误事件
+  socket.onerror = function (error) {
+      console.error("WebSocket error:", error);
+  };
+
+  // 当按钮被点击时发送任务配置
+  document.getElementById("sendTaskButton").onclick = function () {
+      const taskConfig = { taskName: "ExampleTask", params: { param1: "value1" } };
+      socket.send(JSON.stringify(taskConfig));
+      console.log("Sent task config:", taskConfig);
+  };
+</script>
+</body>
+</html>
