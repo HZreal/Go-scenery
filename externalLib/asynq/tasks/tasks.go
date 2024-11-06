@@ -24,10 +24,10 @@ type ImageResizePayload struct {
 	SourceURL string
 }
 
-//----------------------------------------------
+// ----------------------------------------------
 // Write a function NewXXXTask to create a task.
 // A task consists of a type and a payload.
-//----------------------------------------------
+// ----------------------------------------------
 
 func NewEmailDeliveryTask(userID int, tmplID string) (*asynq.Task, error) {
 	payload, err := json.Marshal(EmailDeliveryPayload{UserID: userID, TemplateID: tmplID})
@@ -46,39 +46,46 @@ func NewImageResizeTask(src string) (*asynq.Task, error) {
 	return asynq.NewTask(TypeImageResize, payload, asynq.MaxRetry(5), asynq.Timeout(20*time.Minute)), nil
 }
 
-//---------------------------------------------------------------
+// ---------------------------------------------------------------
 // Write a function HandleXXXTask to handle the input task.
 // Note that it satisfies the asynq.HandlerFunc interface.
 //
 // Handler doesn't need to be a function. You can define a type
 // that satisfies asynq.Handler interface. See examples below.
-//---------------------------------------------------------------
+// ---------------------------------------------------------------
 
+// 定义任务的处理函数
 func HandleEmailDeliveryTask(ctx context.Context, t *asynq.Task) error {
 	var p EmailDeliveryPayload
 	if err := json.Unmarshal(t.Payload(), &p); err != nil {
 		return fmt.Errorf("json.Unmarshal failed: %v: %w", err, asynq.SkipRetry)
 	}
+
+	// 处理任务逻辑，比如发送邮件
 	log.Printf("Sending Email to User: user_id=%d, template_id=%s", p.UserID, p.TemplateID)
 	// Email delivery code ...
+
 	return nil
 }
 
-// ImageProcessor implements asynq.Handler interface.
-type ImageProcessor struct {
+// 定义任务的处理类型（实现 Handler 接口）
+type EmailDeliveryProcessor struct {
 	// ... fields for struct
 }
 
-func (processor *ImageProcessor) ProcessTask(ctx context.Context, t *asynq.Task) error {
-	var p ImageResizePayload
+func (processor *EmailDeliveryProcessor) ProcessTask(ctx context.Context, t *asynq.Task) error {
+	var p EmailDeliveryPayload
 	if err := json.Unmarshal(t.Payload(), &p); err != nil {
 		return fmt.Errorf("json.Unmarshal failed: %v: %w", err, asynq.SkipRetry)
 	}
-	log.Printf("Resizing image: src=%s", p.SourceURL)
-	// Image resizing code ...
+
+	// 处理任务逻辑，比如发送邮件
+	log.Printf("Sending Email to User: user_id=%d, template_id=%s", p.UserID, p.TemplateID)
+	// Email delivery code ...
+
 	return nil
 }
 
-func NewImageProcessor() *ImageProcessor {
-	return &ImageProcessor{}
+func NewEmailDeliveryProcessor() *EmailDeliveryProcessor {
+	return &EmailDeliveryProcessor{}
 }
