@@ -166,6 +166,7 @@ func assertTypeSwitch() {
 		fmt.Printf(" x 的类型 :%T", i)
 	case int:
 		fmt.Printf("x 是 int 型")
+		// fallthrough // 不被允许
 	case float64:
 		fmt.Printf("x 是 float64 型")
 	case func(int) float64:
@@ -183,6 +184,7 @@ func useSelect() {
 	select {
 	case i1 = <-chan1:
 		fmt.Printf("received ", i1, " from c1\n")
+		// fallthrough // 不被允许
 	case chan2 <- i2:
 		fmt.Printf("sent ", i2, " to c2\n")
 	case i3, ok := <-chan3:
@@ -264,6 +266,7 @@ func ifCondition() {
 	// switch marks {
 	// case 90:
 	// 	grade = "A"
+	// 	fallthrough // 这里会自动跳到下一个 case 执行，且不会判断是否匹配！
 	// case 80:
 	// 	grade = "B"
 	// case 50, 60, 70:
