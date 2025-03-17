@@ -89,7 +89,35 @@ func JsonUnmarshall() {
 
 }
 
+// ------------------------------------------------------------------------------------------------------
+type UserInfoFilterReq struct {
+	Name   *string `json:"name"` // 字符串指针，对应 json 字符串中的 null 或者空键
+	Age    int     `json:"age"`
+	Gender *int    `json:"gender"` // 整型指针，对应 json 字符串中的 null 或者空键
+	Status *bool   `json:"status"` // 布尔指针，对应 json 字符串中的 null 或者空键
+}
+
+func testPointType() {
+	// jsonStr := `{"name":"nico","age":0,"gender":1}`
+	jsonStr := `{"name":null,"age":null,"gender":null}`
+	// jsonStr := `{"name":null,"age":null}`
+	var req UserInfoFilterReq
+	_ = json.Unmarshal([]byte(jsonStr), &req)
+	fmt.Println("req------------", req)
+
+	name := ""
+	req2 := UserInfoFilterReq{
+		Name:   &name,
+		Age:    0,
+		Gender: nil,
+		Status: nil,
+	}
+	jsonStr2, _ := json.Marshal(req2)
+	fmt.Println("jsonStr2---------", string(jsonStr2))
+}
+
 func main() {
-	JsonMarshall()
-	JsonUnmarshall()
+	// JsonMarshall()
+	// JsonUnmarshall()
+	testPointType()
 }
