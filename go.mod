@@ -20,6 +20,7 @@ require (
 	github.com/hpcloud/tail v1.0.0
 	github.com/jackc/pgx/v5 v5.6.0
 	github.com/jessevdk/go-flags v1.5.0
+	github.com/jinzhu/copier v0.4.0
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/kardianos/osext v0.0.0-20190222173326-2bc1f35cddc0
 	github.com/minio/minio-go/v7 v7.0.63
