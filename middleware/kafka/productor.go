@@ -15,7 +15,11 @@ import (
 func useSyncProducer() {
 	// 设置连接配置
 	config := sarama.NewConfig()
-	config.Producer.RequiredAcks = sarama.WaitForAll          // ACK应答设置为all，即发送完数据需要leader和follow都确认
+	// ACK 应答设置
+	// ack = 0，发送完数据无需等待响应，性能最高，可靠性最低
+	// ack = 1，默认机制，发送完数据需等待当前提交响应，性能居中，可靠性居中
+	// ack = -1 / all，发送完数据需等待当前提交节点及其他所有（副本）节点同步后响应，性能最低，可靠性最高
+	config.Producer.RequiredAcks = sarama.WaitForAll
 	config.Producer.Partitioner = sarama.NewRandomPartitioner // 选出一个随机的partition
 	config.Producer.Return.Successes = true                   // 成功交付的消息将在success channel返回
 
