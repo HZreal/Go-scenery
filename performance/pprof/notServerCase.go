@@ -89,3 +89,9 @@ func main() {
 // 		有 2 中分析方式：
 // 			1. 终端命令交互方式：执行 go tool pprof /path/to/memory.prof
 //			2. WEB UI 方式：go tool pprof -http=:8888 /path/to/memory.prof
+
+// 通过命令行查看分析结果：go tool pprof profile.prof
+// 生成交互式的命令行报告：go tool pprof -text profile.prof
+// 生成交互式的 Web 报告：go tool pprof -web profile.prof
+// 在命令行中查看某个函数的耗时：go tool pprof -text -function 函数名 profile.prof
+// 在 Web 界面中查看某个函数的耗时：go tool pprof -web -function 函数名 profile.prof
