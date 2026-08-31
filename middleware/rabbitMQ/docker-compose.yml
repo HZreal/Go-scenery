@@ -1,0 +1,79 @@
+services:
+  rabbitmq-cluster-node1:
+    image: rabbitmq:3.8.9-management
+    container_name: rabbitmq-cluster-node1
+    hostname: rabbitmq-cluster-node1
+    environment:
+      RABBITMQ_ERLANG_COOKIE: local-rabbitmq-cluster-cookie
+    ports:
+      - "57010:5672"
+      - "50011:15672"
+    volumes:
+      - ./rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "check_running"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  rabbitmq-cluster-node2:
+    image: rabbitmq:3.8.9-management
+    container_name: rabbitmq-cluster-node2
+    hostname: rabbitmq-cluster-node2
+    environment:
+      RABBITMQ_ERLANG_COOKIE: local-rabbitmq-cluster-cookie
+      RABBITMQ_JOIN_CLUSTER: rabbitmq-cluster-node1
+    command: ["/usr/local/bin/join-cluster.sh"]
+    ports:
+      - "57020:5672"
+      - "50021:15672"
+    volumes:
+      - ./rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
+      - ./scripts/join-cluster.sh:/usr/local/bin/join-cluster.sh:ro
+    depends_on:
+      rabbitmq-cluster-node1:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "check_running"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  rabbitmq-cluster-node3:
+    image: rabbitmq:3.8.9-management
+    container_name: rabbitmq-cluster-node3
+    hostname: rabbitmq-cluster-node3
+    environment:
+      RABBITMQ_ERLANG_COOKIE: local-rabbitmq-cluster-cookie
+      RABBITMQ_JOIN_CLUSTER: rabbitmq-cluster-node1
+    command: ["/usr/local/bin/join-cluster.sh"]
+    ports:
+      - "57030:5672"
+      - "50031:15672"
+    volumes:
+      - ./rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf:ro
+      - ./scripts/join-cluster.sh:/usr/local/bin/join-cluster.sh:ro
+    depends_on:
+      rabbitmq-cluster-node1:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "check_running"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+
+  haproxy:
+    image: haproxy:2.9-alpine
+    container_name: rabbitmq-haproxy
+    ports:
+      - "57009:5672"
+      - "57008:8404"
+    volumes:
+      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+    depends_on:
+      rabbitmq-cluster-node1:
+        condition: service_healthy
+      rabbitmq-cluster-node2:
+        condition: service_healthy
+      rabbitmq-cluster-node3:
+        condition: service_healthy
